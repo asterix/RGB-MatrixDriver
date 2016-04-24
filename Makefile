@@ -16,7 +16,8 @@ TARGET  = matrix_appl
 VPATH   = src
 
 ## Sources ##
-SRCS    = matrix_appl.cpp
+SRCS    = rasp_pi_gpio.cpp \
+          matrix_appl.cpp
 
 OBJS    = $(addprefix $(OBJ)/,$(subst .cpp,.o,$(SRCS)))
 

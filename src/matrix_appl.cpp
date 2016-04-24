@@ -17,9 +17,28 @@ Created:   23-Apr-2016
 ---------------------------------------------------------------------------*/
 
 #include "matrix_appl.h"
+#include "rasp_pi_gpio.h"
 
 
 int main(int argc, char *arg[])
 {
-   std::cout << "Hello World" << std::endl;
+   rasp_pi_gpio io;
+
+   if(io.init())
+   {
+      io.set_mode_out(27);
+
+      while(1)
+      {
+         io.set_pin(27);
+         sleep(1);
+
+         io.clr_pin(27);
+         sleep(1);
+      }
+   }
+   else
+   {
+      LOG_ERROR("Something went wrong");
+   }
 }
