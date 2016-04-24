@@ -90,14 +90,14 @@ void rasp_pi_gpio::set_mode_alt(uint16_t p, rasp_pi_gpio::mode alt)
 // Set a GPIO pin
 void rasp_pi_gpio::set_pin(uint16_t p)
 {
-   *(io_gpset_ + (p/32)) |= (1 << (p%32));
+   *(io_gpset_ + (p/32)) = (1 << (p%32));
 }
 
 
 // Reset a GPIO pin
 void rasp_pi_gpio::clr_pin(uint16_t p)
 {
-   *(io_gpclr_ + (p/32)) |= (1 << (p%32));
+   *(io_gpclr_ + (p/32)) = (1 << (p%32));
 }
 
 

@@ -26,16 +26,16 @@ int main(int argc, char *arg[])
 
    if(io.init())
    {
-      io.set_mode_out(27);
+      io.set_mode_out(16);
 
       while(1)
       {
-         io.set_pin(27);
+         io.set_pin(16);
          sleep(1);
 
-         io.clr_pin(27);
+         io.clr_pin(16);
          sleep(1);
-      }
+       }
    }
    else
    {
