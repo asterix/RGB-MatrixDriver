@@ -16,8 +16,8 @@ Function:  Raspberry Pi GPIO access class
 Created:   23-Apr-2016
 ---------------------------------------------------------------------------*/
 
-
 #include "rasp_pi_gpio.h"
+
 
 
 // Initialize GPIO
@@ -105,5 +105,17 @@ void rasp_pi_gpio::clr_pin(uint16_t p)
 bool rasp_pi_gpio::read_pin(uint16_t p)
 {
    return (*(io_gplev_ + (p/32)) & (1 << (p%32)));
+}
+
+
+// Set full registers
+void rasp_pi_gpio::set_gpset0(uint32_t w)
+{
+   *io_gpset_ = w;
+}
+
+void rasp_pi_gpio::set_gpclr0(uint32_t w)
+{
+   *io_gpclr_ = w;
 }
 

@@ -17,6 +17,10 @@ VPATH   = src
 
 ## Sources ##
 SRCS    = rasp_pi_gpio.cpp \
+          frame_buffer.cpp \
+          rgb_matrix.cpp \
+          pix_driver.cpp \
+          what.cpp \
           matrix_appl.cpp
 
 OBJS    = $(addprefix $(OBJ)/,$(subst .cpp,.o,$(SRCS)))

@@ -19,22 +19,6 @@ Created:   23-Apr-2016
 #ifndef _RASP_PI_GPIO_H_
 #define _RASP_PI_GPIO_H_
 
-// Set the correct peripheral addresses
-// Ref: BCM2835 ARM Peripherals
-#define RASPBERRY_PI_2     1
-
-#ifdef RASPBERRY_PI_2
-#define RASP_PI_X_BASE   0x3F000000
-#else
-#define RASP_PI_X_BASE   0x20000000
-#endif
-
-// GPxxx register offsets
-#define GPIO_BASE        (RASP_PI_X_BASE + 0x200000)
-#define GPSET_OFF        0x07
-#define GPCLR_OFF        0x0A
-#define GPLEV_OFF        0x0D
-
 
 #include <cstdio>
 #include <cstdlib>
@@ -44,12 +28,30 @@ Created:   23-Apr-2016
 #include <unistd.h>
 
 
+// Set the correct peripheral addresses
+// Ref: BCM2835 ARM Peripherals
+#define RASP_PI_2        1
+
+#ifdef RASP_PI_2
+#define RASP_PI_X_BASE   0x3F000000
+#else
+#define RASP_PI_X_BASE   0x20000000
+#endif
+
+
+// GPxxx register offsets
+#define GPIO_BASE        (RASP_PI_X_BASE + 0x200000) // GPFSEL0
+#define GPSET_OFF        0x07 // GPSET0
+#define GPCLR_OFF        0x0A // GPCLR0
+#define GPLEV_OFF        0x0D // GPLEV0
+
+
 // Logging macros
 #define LOG_DEBUG(x) (std::cout << "DEBUG: " << x << std::endl)
 #define LOG_ERROR(x) (std::cout << "ERROR: " << x << std::endl)
 
 // Mem mapped IO space
-#define REG_BLOCK_LEN    (4*1024)
+#define REG_BLOCK_LEN    (1024 * 4)
 
 
 // GPIO accessor
@@ -102,7 +104,9 @@ public:
    void clr_pin(uint16_t pin);
 
    bool read_pin(uint16_t pin);
-
+   
+   void set_gpset0(uint32_t w);
+   void set_gpclr0(uint32_t w);
 };
 
 

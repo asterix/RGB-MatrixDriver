@@ -12,33 +12,10 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 -----------------------------------------------------------------------------
-Function:  RGB LED Matrix main application
-Created:   23-Apr-2016
+Function:  High prio RT thread, updates RGB Matrix from frame buffer
+Created:   25-Apr-2016
 ---------------------------------------------------------------------------*/
 
-#include "matrix_appl.h"
-#include "rasp_pi_gpio.h"
+#include "pix_driver.h"
 
 
-int main(int argc, char *arg[])
-{
-   rasp_pi_gpio io;
-
-   if(io.init())
-   {
-      io.set_mode_out(16);
-
-      while(1)
-      {
-         io.set_pin(16);
-         sleep(1);
-
-         io.clr_pin(16);
-         sleep(1);
-       }
-   }
-   else
-   {
-      LOG_ERROR("Something went wrong");
-   }
-}
