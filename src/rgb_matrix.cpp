@@ -33,7 +33,7 @@ void rgb_matrix::startup()
 void what::playground()
 {
    // Your code goes here
-   while(1);
+
 }
 
 

@@ -25,7 +25,7 @@ Created:   25-Apr-2016
 #include <atomic>
 #include <memory>
 #include <iterator>
-
+#include "logging.h"
 
 class pixel
 {

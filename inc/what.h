@@ -29,7 +29,7 @@ class what : public rt_thread, public pixel
 private:
    frame_buffer* fbuf_;
    pixel* new_fbuf_;
-   std::atomic<bool> run_;
+   volatile std::atomic<bool> run_;
 
 public:
 

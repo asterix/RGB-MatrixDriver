@@ -17,6 +17,7 @@ Created:   25-Apr-2016
 ---------------------------------------------------------------------------*/
 
 #include "what.h"
+#include <unistd.h>
 
 
 // Start running playground
@@ -27,8 +28,11 @@ void what::run()
 
    while(run_.load())
    {
+      sleep(1);
       this->playground();
    }
+
+   LOG_DEBUG("exit from run() of what");
 }
 
 

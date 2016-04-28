@@ -31,6 +31,8 @@ void pix_driver::run()
       this->update_fbuffer();
       this->refresh_matrx();
    }
+
+   LOG_DEBUG("exit from run() of pix_driver");
 }
 
 
@@ -49,11 +51,7 @@ bool pix_driver::get_run()
 // Update the display using the active frame buffer
 void pix_driver::refresh_matrx()
 {
-
-   ifc_.set_clk(1);
-   sleep(1);
-   ifc_.set_clk(0);
-   sleep(1);
+   uint16_t rgb1, rgb2, abcd;
 
 }
 

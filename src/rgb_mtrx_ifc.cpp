@@ -45,12 +45,12 @@ bool rgb_mtrx_ifc::startup_gpio()
 }
 
 
-void rgb_mtrx_ifc::update_gpio()
+void rgb_mtrx_ifc::update_gpio(uint32_t mask)
 {
    // Write straight to GPSET0 register
-   io_.set_gpset0(bits_);
+   io_.set_gpset0(bits_ & mask);
 
    // Write inverted values to GPCLR0 register
-   io_.set_gpclr0(!bits_);
+   io_.set_gpclr0(~bits_ & mask);
 }
 

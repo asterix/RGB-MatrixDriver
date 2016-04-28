@@ -23,4 +23,5 @@ Created:   23-Apr-2016
 int main(int argc, char *arg[])
 {
    rgb_matrix mtrx;
+   mtrx.run();
 }

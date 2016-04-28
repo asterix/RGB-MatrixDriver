@@ -47,7 +47,7 @@ private:
    rasp_pi_gpio io_;
 
    bool startup_gpio();
-   void update_gpio();
+   void update_gpio(uint32_t mask);
 
 public:
    rgb_mtrx_ifc(): bits_(0), io_()
@@ -77,7 +77,7 @@ public:
       (rgb & 0x04) ? (bits_ |= (1 << R1)) : (bits_ &= ~(1 << R1));
       (rgb & 0x02) ? (bits_ |= (1 << G1)) : (bits_ &= ~(1 << G1));
       (rgb & 0x01) ? (bits_ |= (1 << B1)) : (bits_ &= ~(1 << B1));
-      this->update_gpio();
+      this->update_gpio((1 << R1)|(1 << G1)|(1 << B1));
    }
 
    inline void set_rgb2(uint8_t rgb)
@@ -86,7 +86,7 @@ public:
       (rgb & 0x04) ? (bits_ |= (1 << R2)) : (bits_ &= ~(1 << R2));
       (rgb & 0x02) ? (bits_ |= (1 << G2)) : (bits_ &= ~(1 << G2));
       (rgb & 0x01) ? (bits_ |= (1 << B2)) : (bits_ &= ~(1 << B2));
-      this->update_gpio();
+      this->update_gpio((1 << R2)|(1 << G2)|(1 << B2));
    }
 
    inline void set_row(uint8_t abcd)
@@ -96,33 +96,45 @@ public:
       (abcd & 0x04) ? (bits_ |= (1 << B)) : (bits_ &= ~(1 << B));
       (abcd & 0x02) ? (bits_ |= (1 << C)) : (bits_ &= ~(1 << C));
       (abcd & 0x01) ? (bits_ |= (1 << D)) : (bits_ &= ~(1 << D));
-      this->update_gpio();
+      this->update_gpio((1 << A)|(1 << B)|(1 << C)|(1 << D));
    }
 
    inline void set_clk(uint8_t clk)
    {
       // CLK = 0/1
       clk ? (bits_ |= (1 << CLK)) : (bits_ &= ~(1 << CLK));
-      this->update_gpio();
+      this->update_gpio((1 << CLK));
    }
 
    inline void set_lat(uint8_t lat)
    {
       // LAT/STROBE = 0/1
       lat ? (bits_ |= (1 << LAT)) : (bits_ &= ~(1 << LAT));
-      this->update_gpio();
+      this->update_gpio((1 << LAT));
    }
 
    inline void set_oe(uint8_t oe)
    {
       // OE = 0/1
       oe ? (bits_ |= (1 << OE)) : (bits_ &= ~(1 << OE));
-      this->update_gpio();
+      this->update_gpio((1 << OE));
    }
 
    inline uint32_t get_bits()
    {
       return bits_;
+   }
+
+   inline void set_gpio(uint16_t p, bool v)
+   {
+      if(v)
+      {
+         io_.set_pin(p);
+      }
+      else
+      {
+         io_.clr_pin(p);
+      }
    }
 };
 
