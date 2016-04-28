@@ -22,6 +22,8 @@ Created:   25-Apr-2016
 
 void pix_driver::run()
 {
+   LOG_DEBUG("run() of pix_driver");
+
    this->set_run(true);
 
    while(this->get_run())
@@ -64,6 +66,7 @@ void pix_driver::update_fbuffer()
 
 void pix_driver::stop()
 {
+   LOG_DEBUG("stop() of pix_driver");
    this->set_run(false);
 }
 

@@ -52,12 +52,13 @@ private:
 public:
    rgb_mtrx_ifc(): bits_(0), io_()
    {
+      LOG_DEBUG("Constructor of rgb_mtrx_ifc");
       this->startup_gpio();
    }
    
    ~rgb_mtrx_ifc()
    {
-
+      LOG_DEBUG("Destructor of rgb_mtrx_ifc");
    }
 
    inline void set_all()

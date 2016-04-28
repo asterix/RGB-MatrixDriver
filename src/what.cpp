@@ -22,6 +22,7 @@ Created:   25-Apr-2016
 // Start running playground
 void what::run()
 {
+   LOG_DEBUG("run() of what");
    run_.store(true);
 
    while(run_.load())
@@ -34,6 +35,7 @@ void what::run()
 // Terminate running
 void what::stop()
 {
+   LOG_DEBUG("stop() of what");
    run_.store(false);
 }
 

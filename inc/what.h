@@ -38,12 +38,13 @@ public:
    what(frame_buffer* f)
       : rt_thread(), fbuf_(f), run_(false)
    {
+      LOG_DEBUG("Constructor of what");
       new_fbuf_ = fbuf_->get_active_fbuffer();
    }
 
    ~what()
    {
-
+      LOG_DEBUG("Destructor of what");
    }
 
    void run();

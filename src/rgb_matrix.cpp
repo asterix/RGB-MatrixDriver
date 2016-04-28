@@ -33,12 +33,15 @@ void rgb_matrix::startup()
 void what::playground()
 {
    // Your code goes here
+   while(1);
 }
 
 
 // This is merry downtown!
 void rgb_matrix::run()
 {
+   LOG_DEBUG("run() of rgb_matrix");
+   
    // Spawn Pixel Driver
    pix_driver pixel_drv(frame_buf_);
    pixel_drv.run_as_thread();

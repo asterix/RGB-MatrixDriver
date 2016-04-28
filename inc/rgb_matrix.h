@@ -44,6 +44,7 @@ public:
       : length_(32), height_(16), depth_(8),
         num_in_chain_(1), frame_buf_(nullptr)
    {
+      LOG_DEBUG("Constructor of rgb_matrix");
       this->startup();
    }
 
@@ -51,11 +52,13 @@ public:
       : length_(l), height_(h), depth_(d),
         num_in_chain_(n), frame_buf_(nullptr)
    {
+      LOG_DEBUG("Constructor of rgb_matrix");
       this->startup();
    }
    
    ~rgb_matrix()
    {
+      LOG_DEBUG("Destructor of rgb_matrix");
       delete frame_buf_;
    }
 

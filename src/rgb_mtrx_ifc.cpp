@@ -40,6 +40,7 @@ bool rgb_mtrx_ifc::startup_gpio()
       }
    }
 
+   LOG_DEBUG("Successful setup of rgb_mtrx_ifc");
    return true;
 }
 
