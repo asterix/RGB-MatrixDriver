@@ -12,37 +12,19 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 -----------------------------------------------------------------------------
-Function:  RGB Matrix abstraction
+Function:  Logging functions - TODO
 Created:   24-Apr-2016
 ---------------------------------------------------------------------------*/
 
 
-#include "rgb_matrix.h"
-#include "pix_driver.h"
-#include "what.h"
+#ifndef _LOGGING_H_
+#define _LOGGING_H_
 
 
-
-void rgb_matrix::startup()
-{
-   // Create/initialize frame buffer
-   frame_buf_ = new frame_buffer(length_ * num_in_chain_, height_, depth_);
-}
+// Logging macros
+#define LOG_DEBUG(x) (std::cout << "DEBUG: " << x << std::endl)
+#define LOG_ERROR(x) (std::cout << "ERROR: " << x << std::endl)
 
 
-// This is merry downtown!
-void rgb_matrix::run()
-{
-   // Spawn Pixel Driver
-   std::shared_ptr<pix_driver> pdrv = make_shared<pix_driver>(frame_buf_);
-   std::thread pixdrv(&pix_driver::run, pdrv);
-
-   // Spawn What
-   std::shared_ptr<what> wh = make_shared<what>(frame_buf_);
-   std::thread wht(&what::run, wh);
-
-   // Wait for signal to terminate
-
-   // Teardown Pixel Driver and What
-}
+#endif // _LOGGING_H_
 

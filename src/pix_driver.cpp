@@ -19,3 +19,46 @@ Created:   25-Apr-2016
 #include "pix_driver.h"
 
 
+
+void pix_driver::run()
+{
+   this->set_run(true);
+
+   while(this->get_run())
+   {
+      this->update_fbuffer();
+      this->refresh_matrx();
+   }
+}
+
+
+void pix_driver::set_run(bool r)
+{
+   run_.store(r);
+}
+
+
+bool pix_driver::get_run()
+{
+   return run_.load();
+}
+
+
+// Update the display using the active frame buffer
+void pix_driver::refresh_matrx()
+{
+
+}
+
+
+void pix_driver::update_fbuffer()
+{
+   curr_fbuf_ = fbuf_->get_active_fbuffer();
+}
+
+
+void pix_driver::stop()
+{
+   this->set_run(false);
+}
+

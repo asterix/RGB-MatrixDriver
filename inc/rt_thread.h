@@ -12,37 +12,61 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 -----------------------------------------------------------------------------
-Function:  RGB Matrix abstraction
-Created:   24-Apr-2016
+Function:  pthread wrapper for Real-Time threads (portable? may be not!)
+Created:   26-Apr-2016
 ---------------------------------------------------------------------------*/
 
 
-#include "rgb_matrix.h"
-#include "pix_driver.h"
-#include "what.h"
+#ifndef _RT_THREAD_H_
+#define _RT_THREAD_H_
 
 
+#include <pthread.h>
+#include "logging.h"
 
-void rgb_matrix::startup()
+
+class rt_thread
 {
-   // Create/initialize frame buffer
-   frame_buf_ = new frame_buffer(length_ * num_in_chain_, height_, depth_);
-}
+public:
+   enum
+   {
+      // Change scheduling policy SCHED_FIFO or SCHED_RR
+      // 1-99, 99 being the highest priority
+      NORMAL = 0,
+      HPRIO = 10, 
+      MPRIO = 9, 
+      LPRIO = 8,
+      OTHER = 3
+   };
+
+private:
+   int prio_;
+   int policy_;
+   pthread_t th_;
+
+   static void (*thread_launch_fptr)(void *fn);
+   
+protected:
+
+   // Implemented in the derived class
+   virtual void run();
+
+public:
+   rt_thread(int pri = LPRIO, int sch = SCHED_FIFO)
+      : prio_(pri), policy_(sch)
+   {
+
+   }
+
+   ~rt_thread()
+   {
+
+   }
+
+   bool run_as_thread();
+
+};
 
 
-// This is merry downtown!
-void rgb_matrix::run()
-{
-   // Spawn Pixel Driver
-   std::shared_ptr<pix_driver> pdrv = make_shared<pix_driver>(frame_buf_);
-   std::thread pixdrv(&pix_driver::run, pdrv);
-
-   // Spawn What
-   std::shared_ptr<what> wh = make_shared<what>(frame_buf_);
-   std::thread wht(&what::run, wh);
-
-   // Wait for signal to terminate
-
-   // Teardown Pixel Driver and What
-}
+#endif // _RT_THREAD_H_
 

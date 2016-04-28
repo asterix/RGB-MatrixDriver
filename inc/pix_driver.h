@@ -20,7 +20,40 @@ Created:   25-Apr-2016
 #define _PIX_DRIVER_H_
 
 
+#include "frame_buffer.h"
 
+
+class pix_driver : public pixel
+{
+private:
+   frame_buffer* fbuf_;
+   pixel* curr_fbuf_;
+   std::atomic<bool> run_;
+
+   void refresh_matrx();
+   void update_fbuffer();
+   void set_run(bool r);
+   bool get_run();
+
+public:
+
+   pix_driver() = delete;
+
+   pix_driver(frame_buffer* f)
+      : fbuf_(f), run_(false)
+   {
+      curr_fbuf_ = fbuf_->get_active_fbuffer();
+   }
+
+   ~pix_driver()
+   {
+
+   }
+
+   void run();
+   void stop();
+
+};
 
 #endif // _PIX_DRIVER_H_
 

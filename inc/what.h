@@ -20,6 +20,37 @@ Created:   25-Apr-2016
 #define _WHAT_H_
 
 
+#include "frame_buffer.h"
+
+
+class what : public pixel
+{
+private:
+   frame_buffer* fbuf_;
+   pixel* new_fbuf_;
+   std::atomic<bool> run_;
+
+public:
+
+   what() = delete;
+
+   what(frame_buffer* f)
+      : fbuf_(f), run_(false)
+   {
+      new_fbuf_ = fbuf_->get_active_fbuffer();
+   }
+
+   ~what()
+   {
+
+   }
+
+   void run();
+   virtual void playground();
+   void stop();
+
+};
+
 
 
 #endif // _WHAT_H_

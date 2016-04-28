@@ -33,12 +33,21 @@ void frame_buffer::change_active_fbuffer()
 {
    int num_bufs = fbuf_.size();
    active_buf_ = ++active_buf_ % num_bufs;
+
+   taken_.store(false);
+
+   // Wait until the new active fbuffer is read by driver
+   while(!taken_.load());
 }
 
 
 pixel* frame_buffer::get_active_fbuffer()
 {
-   return fbuf_.at(active_buf_);
+   pixel *res = fbuf_.at(active_buf_);
+
+   // Say taken to unblock frame updater
+   taken_.store(true);
+   return res;
 }
 
 

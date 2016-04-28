@@ -12,37 +12,9 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 -----------------------------------------------------------------------------
-Function:  RGB Matrix abstraction
+Function:  RGB Matrix interface to GPIO
 Created:   24-Apr-2016
 ---------------------------------------------------------------------------*/
 
-
-#include "rgb_matrix.h"
-#include "pix_driver.h"
-#include "what.h"
-
-
-
-void rgb_matrix::startup()
-{
-   // Create/initialize frame buffer
-   frame_buf_ = new frame_buffer(length_ * num_in_chain_, height_, depth_);
-}
-
-
-// This is merry downtown!
-void rgb_matrix::run()
-{
-   // Spawn Pixel Driver
-   std::shared_ptr<pix_driver> pdrv = make_shared<pix_driver>(frame_buf_);
-   std::thread pixdrv(&pix_driver::run, pdrv);
-
-   // Spawn What
-   std::shared_ptr<what> wh = make_shared<what>(frame_buf_);
-   std::thread wht(&what::run, wh);
-
-   // Wait for signal to terminate
-
-   // Teardown Pixel Driver and What
-}
+#include "rgb_mtrx_ifc.h"
 

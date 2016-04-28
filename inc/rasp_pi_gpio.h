@@ -26,6 +26,7 @@ Created:   23-Apr-2016
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include "logging.h"
 
 
 // Set the correct peripheral addresses
@@ -45,10 +46,6 @@ Created:   23-Apr-2016
 #define GPCLR_OFF        0x0A // GPCLR0
 #define GPLEV_OFF        0x0D // GPLEV0
 
-
-// Logging macros
-#define LOG_DEBUG(x) (std::cout << "DEBUG: " << x << std::endl)
-#define LOG_ERROR(x) (std::cout << "ERROR: " << x << std::endl)
 
 // Mem mapped IO space
 #define REG_BLOCK_LEN    (1024 * 4)

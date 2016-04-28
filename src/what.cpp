@@ -19,4 +19,21 @@ Created:   25-Apr-2016
 #include "what.h"
 
 
+// Start running playground
+void what::run()
+{
+   run_.store(true);
+
+   while(run_.load())
+   {
+      this->playground();
+   }
+}
+
+
+// Terminate running
+void what::stop()
+{
+   run_.store(false);
+}
 

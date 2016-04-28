@@ -63,7 +63,10 @@ private:
    uint8_t depth_;
    uint32_t length_;
    uint32_t height_;
+   std::atomic<bool> taken_;
 
+   // Data guards
+   std::mutex fbuf_mtx_;
 
    // Private methods
    void init_fbuf();
@@ -72,13 +75,13 @@ private:
 public:
    frame_buffer()
       : active_buf_(0), depth_(COLOR_DEPTH),
-        length_(MATRX_LENGTH), height_(MATRX_HEIGHT)
+        length_(MATRX_LENGTH), height_(MATRX_HEIGHT), taken_(false)
    {
       this->init_fbuf();
    }
 
    frame_buffer(uint32_t l, uint32_t h, uint8_t d = COLOR_DEPTH)
-      : active_buf_(0), depth_(d), length_(l), height_(h)
+      : active_buf_(0), depth_(d), length_(l), height_(h), taken_(false)
    {
       this->init_fbuf();
    }

@@ -19,101 +19,50 @@ Created:   24-Apr-2016
 #ifndef _RGB_MATRIX_H_
 #define _RGB_MATRIX_H_
 
+
+#include <thread>
+#include <memory>
 #include "rasp_pi_gpio.h"
+#include "frame_buffer.h"
 
 
-class rgb_mtrx_ifc
+
+class rgb_matrix
 {
-public:
-   enum gpio_map
-   {
-      R1 = 11,
-      G1 = 27,
-      B1 = 7,
-      R2 = 8,
-      G2 = 9,
-      B2 = 10,
-      A = 22,
-      B = 23,
-      C = 24,
-      D = 25,
-      CLK = 17,
-      LAT = 4,
-      OE = 18     
-   };
-   
 private:
-   uint32_t bits;
+   uint16_t length_;
+   uint16_t height_;
+   uint8_t depth_;
+   uint16_t num_in_chain_;
+
+   frame_buffer *frame_buf_;
+
+   void startup();
 
 public:
-   rgb_mtrx_ifc(): bits(0)
+   rgb_matrix()
+      : length(32), height(16), depth_(8),
+        num_in_chain_(1), fbuf_(nullptr)
    {
+      this->startup();
+   }
 
+   rgb_matrix(uint16_t l, uint16_t h, uint8_t d, uint16_t n)
+      : length(l), height(h), depth_(d),
+        num_in_chain_(n), fbuf_(nullptr)
+   {
+      this->startup();
    }
    
-   ~rgb_mtrx_ifc()
+   ~rgb_matrix()
    {
-
+      delete frame_buf_;
    }
 
-   inline void set_all()
-   {
-      bits = 0xFFFFFFFF;
-   }
+   void run();
 
-   inline void clr_all()
-   {
-      bits = 0;
-   }
-
-   inline void set_rgb1(uint8_t rgb)
-   {
-      // -----RGB (least 3 bits)
-      (rgb & 0x04) ? (bits |= (1 << R1)) : (bits &= ~(1 << R1));
-      (rgb & 0x02) ? (bits |= (1 << G1)) : (bits &= ~(1 << G1));
-      (rgb & 0x01) ? (bits |= (1 << B1)) : (bits &= ~(1 << B1));
-   }
-
-   inline void set_rgb2(uint8_t rgb)
-   {
-      // -----RGB (least 3 bits)
-      (rgb & 0x04) ? (bits |= (1 << R2)) : (bits &= ~(1 << R2));
-      (rgb & 0x02) ? (bits |= (1 << G2)) : (bits &= ~(1 << G2));
-      (rgb & 0x01) ? (bits |= (1 << B2)) : (bits &= ~(1 << B2));
-   }
-
-   inline void set_row(uint8_t abcd)
-   {
-      // ----ABCD (least 4 bits)
-      (abcd & 0x08) ? (bits |= (1 << A)) : (bits &= ~(1 << A));
-      (abcd & 0x04) ? (bits |= (1 << B)) : (bits &= ~(1 << B));
-      (abcd & 0x02) ? (bits |= (1 << C)) : (bits &= ~(1 << C));
-      (abcd & 0x01) ? (bits |= (1 << D)) : (bits &= ~(1 << D));
-   }
-
-   inline void set_clk(uint8_t clk)
-   {
-      // CLK = 0/1
-      clk ? (bits |= (1 << CLK)) : (bits &= ~(1 << CLK));
-   }
-
-   inline void set_lat(uint8_t lat)
-   {
-      // LAT/STROBE = 0/1
-      lat ? (bits |= (1 << LAT)) : (bits &= ~(1 << LAT));
-   }
-
-   inline void set_oe(uint8_t oe)
-   {
-      // OE = 0/1
-      oe ? (bits |= (1 << OE)) : (bits &= ~(1 << OE));
-   }
-
-   inline uint32_t get_bits()
-   {
-      return bits;
-   }
 };
 
 
 #endif // _RGB_MATRIX_H_
+
