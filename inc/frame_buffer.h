@@ -77,17 +77,20 @@ public:
       : active_buf_(0), depth_(COLOR_DEPTH),
         length_(MATRX_LENGTH), height_(MATRX_HEIGHT), taken_(false)
    {
+      LOG_DEBUG("Constructor of frame_buffer");
       this->init_fbuf();
    }
 
    frame_buffer(uint32_t l, uint32_t h, uint8_t d = COLOR_DEPTH)
       : active_buf_(0), depth_(d), length_(l), height_(h), taken_(false)
    {
+      LOG_DEBUG("Constructor of frame_buffer");
       this->init_fbuf();
    }
 
    ~frame_buffer()
    {
+      LOG_DEBUG("Destructor of frame_buffer");
       // Release frame buffers
       for(auto it = fbuf_.begin(); it != fbuf_.end(); it++)
       {

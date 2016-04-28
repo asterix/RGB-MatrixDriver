@@ -81,11 +81,12 @@ public:
                    io_gpclr_(nullptr),
                    io_gplev_(nullptr)
    {
-      // Nothing here
+      LOG_DEBUG("Constructor of rasp_pi_gpio");
    }
 
    ~rasp_pi_gpio()
    {
+      LOG_DEBUG("Destructor of rasp_pi_gpio");
       if(gpio_fd_ > 0)
       {
          munmap((void *)io_port_, REG_BLOCK_LEN);

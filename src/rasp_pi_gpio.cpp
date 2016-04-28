@@ -54,6 +54,7 @@ bool rasp_pi_gpio::init()
 
    if(result)
    {
+      LOG_DEBUG("Successful init of rasp_pi_gpio");
       io_port_ = (volatile uint32_t*)gpio;
       io_gpset_ = io_port_ + GPSET_OFF;
       io_gpclr_ = io_port_ + GPCLR_OFF;

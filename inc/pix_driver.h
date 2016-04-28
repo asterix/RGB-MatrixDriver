@@ -49,12 +49,13 @@ public:
       : rt_thread(HPRIO), fbuf_(f), run_(false),
         ifc_()
    {
+      LOG_DEBUG("Constructor of pix_driver");
       curr_fbuf_ = fbuf_->get_active_fbuffer();
    }
 
    ~pix_driver()
    {
-
+      LOG_DEBUG("Destructor of pix_driver");
    }
 
    void stop();
