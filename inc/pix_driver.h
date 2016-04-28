@@ -35,6 +35,7 @@ private:
    void update_fbuffer();
    void set_run(bool r);
    bool get_run();
+   void run();
 
 public:
 
@@ -51,7 +52,6 @@ public:
 
    }
 
-   void run();
    void stop();
 
 };

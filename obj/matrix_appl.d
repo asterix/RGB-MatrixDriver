@@ -1,2 +1,2 @@
 obj/matrix_appl.o: src/matrix_appl.cpp inc/matrix_appl.h \
- inc/rasp_pi_gpio.h
+ inc/rasp_pi_gpio.h inc/logging.h

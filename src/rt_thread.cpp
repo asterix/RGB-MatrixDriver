@@ -16,12 +16,14 @@ Function:  pthread wrapper for Real-Time threads (portable? may be not!)
 Created:   26-Apr-2016
 ---------------------------------------------------------------------------*/
 
+#include <sched.h>
 #include "rt_thread.h"
 
 
 void *rt_thread::thread_launch_fptr(void *fn)
 {
-   static_cast<rt_thread>(fn)->run();
+   static_cast<rt_thread*>(fn)->run();
+   return nullptr;
 }
 
 
@@ -40,7 +42,7 @@ bool rt_thread::run_as_thread()
       if(prio_ > 0)
       {
          struct sched_param sch;
-         sch.p = prio_;
+         sch.sched_priority = prio_;
          pthread_setschedparam(th_, policy_, &sch);
       }
    }

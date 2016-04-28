@@ -44,12 +44,12 @@ private:
    int policy_;
    pthread_t th_;
 
-   static void (*thread_launch_fptr)(void *fn);
+   static void* thread_launch_fptr(void *fn);
    
 protected:
 
    // Implemented in the derived class
-   virtual void run();
+   virtual void run() = 0;
 
 public:
    rt_thread()

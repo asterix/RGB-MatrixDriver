@@ -20,6 +20,7 @@ Created:   24-Apr-2016
 #ifndef _LOGGING_H_
 #define _LOGGING_H_
 
+#include <iostream>
 
 // Logging macros
 #define LOG_DEBUG(x) (std::cout << "DEBUG: " << x << std::endl)

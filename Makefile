@@ -9,7 +9,7 @@ CFLAGS  = -g -Wall -MMD -I${INC} -O2
 
 ## Linker specific ##
 LPATHS  =
-LDFLAGS =
+LDFLAGS = -lpthread
 
 ## Target ##
 TARGET  = matrix_appl
@@ -17,6 +17,8 @@ VPATH   = src
 
 ## Sources ##
 SRCS    = rasp_pi_gpio.cpp \
+          rt_thread.cpp \
+          rgb_mtrx_ifc.cpp \
           frame_buffer.cpp \
           rgb_matrix.cpp \
           pix_driver.cpp \
