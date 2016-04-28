@@ -43,12 +43,16 @@ public:
    };
    
 private:
-   uint32_t bits;
+   uint32_t bits_;
+   rasp_pi_gpio io_;
+
+   bool startup_gpio();
+   void update_gpio();
 
 public:
-   rgb_mtrx_ifc(): bits(0)
+   rgb_mtrx_ifc(): bits_(0), io_()
    {
-
+      this->startup_gpio();
    }
    
    ~rgb_mtrx_ifc()
@@ -58,60 +62,66 @@ public:
 
    inline void set_all()
    {
-      bits = 0xFFFFFFFF;
+      bits_ = 0xFFFFFFFF;
    }
 
    inline void clr_all()
    {
-      bits = 0;
+      bits_ = 0;
    }
 
    inline void set_rgb1(uint8_t rgb)
    {
       // -----RGB (least 3 bits)
-      (rgb & 0x04) ? (bits |= (1 << R1)) : (bits &= ~(1 << R1));
-      (rgb & 0x02) ? (bits |= (1 << G1)) : (bits &= ~(1 << G1));
-      (rgb & 0x01) ? (bits |= (1 << B1)) : (bits &= ~(1 << B1));
+      (rgb & 0x04) ? (bits_ |= (1 << R1)) : (bits_ &= ~(1 << R1));
+      (rgb & 0x02) ? (bits_ |= (1 << G1)) : (bits_ &= ~(1 << G1));
+      (rgb & 0x01) ? (bits_ |= (1 << B1)) : (bits_ &= ~(1 << B1));
+      this->update_gpio();
    }
 
    inline void set_rgb2(uint8_t rgb)
    {
       // -----RGB (least 3 bits)
-      (rgb & 0x04) ? (bits |= (1 << R2)) : (bits &= ~(1 << R2));
-      (rgb & 0x02) ? (bits |= (1 << G2)) : (bits &= ~(1 << G2));
-      (rgb & 0x01) ? (bits |= (1 << B2)) : (bits &= ~(1 << B2));
+      (rgb & 0x04) ? (bits_ |= (1 << R2)) : (bits_ &= ~(1 << R2));
+      (rgb & 0x02) ? (bits_ |= (1 << G2)) : (bits_ &= ~(1 << G2));
+      (rgb & 0x01) ? (bits_ |= (1 << B2)) : (bits_ &= ~(1 << B2));
+      this->update_gpio();
    }
 
    inline void set_row(uint8_t abcd)
    {
       // ----ABCD (least 4 bits)
-      (abcd & 0x08) ? (bits |= (1 << A)) : (bits &= ~(1 << A));
-      (abcd & 0x04) ? (bits |= (1 << B)) : (bits &= ~(1 << B));
-      (abcd & 0x02) ? (bits |= (1 << C)) : (bits &= ~(1 << C));
-      (abcd & 0x01) ? (bits |= (1 << D)) : (bits &= ~(1 << D));
+      (abcd & 0x08) ? (bits_ |= (1 << A)) : (bits_ &= ~(1 << A));
+      (abcd & 0x04) ? (bits_ |= (1 << B)) : (bits_ &= ~(1 << B));
+      (abcd & 0x02) ? (bits_ |= (1 << C)) : (bits_ &= ~(1 << C));
+      (abcd & 0x01) ? (bits_ |= (1 << D)) : (bits_ &= ~(1 << D));
+      this->update_gpio();
    }
 
    inline void set_clk(uint8_t clk)
    {
       // CLK = 0/1
-      clk ? (bits |= (1 << CLK)) : (bits &= ~(1 << CLK));
+      clk ? (bits_ |= (1 << CLK)) : (bits_ &= ~(1 << CLK));
+      this->update_gpio();
    }
 
    inline void set_lat(uint8_t lat)
    {
       // LAT/STROBE = 0/1
-      lat ? (bits |= (1 << LAT)) : (bits &= ~(1 << LAT));
+      lat ? (bits_ |= (1 << LAT)) : (bits_ &= ~(1 << LAT));
+      this->update_gpio();
    }
 
    inline void set_oe(uint8_t oe)
    {
       // OE = 0/1
-      oe ? (bits |= (1 << OE)) : (bits &= ~(1 << OE));
+      oe ? (bits_ |= (1 << OE)) : (bits_ &= ~(1 << OE));
+      this->update_gpio();
    }
 
    inline uint32_t get_bits()
    {
-      return bits;
+      return bits_;
    }
 };
 

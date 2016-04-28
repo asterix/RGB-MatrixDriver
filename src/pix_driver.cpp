@@ -48,6 +48,11 @@ bool pix_driver::get_run()
 void pix_driver::refresh_matrx()
 {
 
+   ifc_.set_clk(1);
+   sleep(1);
+   ifc_.set_clk(0);
+   sleep(1);
+
 }
 
 

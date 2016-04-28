@@ -22,6 +22,7 @@ Created:   25-Apr-2016
 
 #include "frame_buffer.h"
 #include "rt_thread.h"
+#include "rgb_mtrx_ifc.h"
 
 
 class pix_driver : public rt_thread, public pixel
@@ -30,6 +31,9 @@ private:
    frame_buffer* fbuf_;
    pixel* curr_fbuf_;
    std::atomic<bool> run_;
+
+   // Use GPIO interface
+   rgb_mtrx_ifc ifc_;
 
    void refresh_matrx();
    void update_fbuffer();
@@ -42,7 +46,8 @@ public:
    pix_driver() = delete;
 
    pix_driver(frame_buffer* f)
-      : rt_thread(HPRIO), fbuf_(f), run_(false)
+      : rt_thread(HPRIO), fbuf_(f), run_(false),
+        ifc_()
    {
       curr_fbuf_ = fbuf_->get_active_fbuffer();
    }
