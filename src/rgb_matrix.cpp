@@ -47,6 +47,8 @@ void rgb_matrix::run()
    what show_what(frame_buf_);
    show_what.run_as_thread();
 
+   sleep(20);
+   show_what.stop();
    // Wait for signal to terminate
    show_what.wait_on_thread();
 
