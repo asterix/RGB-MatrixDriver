@@ -34,12 +34,8 @@ void rgb_matrix::startup()
 void rgb_matrix::run()
 {
    // Spawn Pixel Driver
-   std::shared_ptr<pix_driver> pdrv = make_shared<pix_driver>(frame_buf_);
-   std::thread pixdrv(&pix_driver::run, pdrv);
 
    // Spawn What
-   std::shared_ptr<what> wh = make_shared<what>(frame_buf_);
-   std::thread wht(&what::run, wh);
 
    // Wait for signal to terminate
 

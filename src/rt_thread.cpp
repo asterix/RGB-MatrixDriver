@@ -21,7 +21,7 @@ Created:   26-Apr-2016
 
 void *rt_thread::thread_launch_fptr(void *fn)
 {
-   (static_cast<rt_thread>(fn))->run();
+   static_cast<rt_thread>(fn)->run();
 }
 
 
@@ -43,6 +43,19 @@ bool rt_thread::run_as_thread()
          sch.p = prio_;
          pthread_setschedparam(th_, policy_, &sch);
       }
+   }
+
+   return (result == 0);
+}
+
+
+bool rt_thread::wait_on_thread()
+{
+   int result = pthread_join(th_, NULL);
+
+   if(result != 0)
+   {
+       LOG_ERROR("Thread ended in error :( Error code: "+ std::to_string(result));
    }
 
    return (result == 0);

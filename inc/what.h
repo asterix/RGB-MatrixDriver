@@ -21,9 +21,10 @@ Created:   25-Apr-2016
 
 
 #include "frame_buffer.h"
+#include "rt_thread.h"
 
 
-class what : public pixel
+class what : public rt_thread, public pixel
 {
 private:
    frame_buffer* fbuf_;
@@ -35,7 +36,7 @@ public:
    what() = delete;
 
    what(frame_buffer* f)
-      : fbuf_(f), run_(false)
+      : rt_thread(), fbuf_(f), run_(false)
    {
       new_fbuf_ = fbuf_->get_active_fbuffer();
    }

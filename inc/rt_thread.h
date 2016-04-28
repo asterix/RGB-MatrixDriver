@@ -52,10 +52,16 @@ protected:
    virtual void run();
 
 public:
-   rt_thread(int pri = LPRIO, int sch = SCHED_FIFO)
+   rt_thread()
+      : prio_(NORMAL), policy_(SCHED_OTHER)
+   {
+      // Not an RT thread
+   }
+
+   rt_thread(int pri, int sch = SCHED_FIFO)
       : prio_(pri), policy_(sch)
    {
-
+      // RT thread
    }
 
    ~rt_thread()
@@ -64,6 +70,7 @@ public:
    }
 
    bool run_as_thread();
+   bool wait_on_thread();
 
 };
 

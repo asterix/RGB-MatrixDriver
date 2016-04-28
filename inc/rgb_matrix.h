@@ -41,15 +41,15 @@ private:
 
 public:
    rgb_matrix()
-      : length(32), height(16), depth_(8),
-        num_in_chain_(1), fbuf_(nullptr)
+      : length_(32), height_(16), depth_(8),
+        num_in_chain_(1), frame_buf_(nullptr)
    {
       this->startup();
    }
 
    rgb_matrix(uint16_t l, uint16_t h, uint8_t d, uint16_t n)
-      : length(l), height(h), depth_(d),
-        num_in_chain_(n), fbuf_(nullptr)
+      : length_(l), height_(h), depth_(d),
+        num_in_chain_(n), frame_buf_(nullptr)
    {
       this->startup();
    }

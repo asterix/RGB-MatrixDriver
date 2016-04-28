@@ -21,9 +21,10 @@ Created:   25-Apr-2016
 
 
 #include "frame_buffer.h"
+#include "rt_thread.h"
 
 
-class pix_driver : public pixel
+class pix_driver : public rt_thread, public pixel
 {
 private:
    frame_buffer* fbuf_;
@@ -40,7 +41,7 @@ public:
    pix_driver() = delete;
 
    pix_driver(frame_buffer* f)
-      : fbuf_(f), run_(false)
+      : rt_thread(HPRIO), fbuf_(f), run_(false)
    {
       curr_fbuf_ = fbuf_->get_active_fbuffer();
    }
