@@ -45,14 +45,22 @@ public:
 private:
    uint32_t bits_;
    rasp_pi_gpio io_;
+   uint32_t full_mask_;
 
    bool startup_gpio();
    void update_gpio(uint32_t mask);
 
 public:
-   rgb_mtrx_ifc(): bits_(0), io_()
+   rgb_mtrx_ifc(): bits_(0), io_(), full_mask_(0)
    {
       LOG_DEBUG("Constructor of rgb_mtrx_ifc");
+      
+      // Create all used GPIO mask
+      full_mask_ = ((1 << R1) | (1 << B1) | (1 << G1) |
+                    (1 << R2) | (1 << B2) | (1 << G2) |
+                    (1 << A) | (1 << B) | (1 << C) | (1 << D) |
+                    (1 << CLK) | (1 << LAT) | (1 << OE));
+
       this->startup_gpio();
    }
    
@@ -64,11 +72,13 @@ public:
    inline void set_all()
    {
       bits_ = 0xFFFFFFFF;
+      this->update_gpio(full_mask_);
    }
 
    inline void clr_all()
    {
       bits_ = 0;
+      this->update_gpio(full_mask_);
    }
 
    inline void set_rgb1(uint8_t rgb)
@@ -89,13 +99,13 @@ public:
       this->update_gpio((1 << R2)|(1 << G2)|(1 << B2));
    }
 
-   inline void set_row(uint8_t abcd)
+   inline void set_row(uint8_t dcba)
    {
-      // ----ABCD (least 4 bits)
-      (abcd & 0x08) ? (bits_ |= (1 << A)) : (bits_ &= ~(1 << A));
-      (abcd & 0x04) ? (bits_ |= (1 << B)) : (bits_ &= ~(1 << B));
-      (abcd & 0x02) ? (bits_ |= (1 << C)) : (bits_ &= ~(1 << C));
-      (abcd & 0x01) ? (bits_ |= (1 << D)) : (bits_ &= ~(1 << D));
+      // ----DCBA (least 4 bits)
+      (dcba & 0x01) ? (bits_ |= (1 << A)) : (bits_ &= ~(1 << A));
+      (dcba & 0x02) ? (bits_ |= (1 << B)) : (bits_ &= ~(1 << B));
+      (dcba & 0x04) ? (bits_ |= (1 << C)) : (bits_ &= ~(1 << C));
+      (dcba & 0x08) ? (bits_ |= (1 << D)) : (bits_ &= ~(1 << D));
       this->update_gpio((1 << A)|(1 << B)|(1 << C)|(1 << D));
    }
 

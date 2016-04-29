@@ -33,9 +33,9 @@ public:
       // Change scheduling policy SCHED_FIFO or SCHED_RR
       // 1-99, 99 being the highest priority
       NORMAL = 0,
-      HPRIO = 10, 
-      MPRIO = 9, 
-      LPRIO = 8,
+      HPRIO = 20, 
+      MPRIO = 10, 
+      LPRIO = 5,
       OTHER = 3
    };
 

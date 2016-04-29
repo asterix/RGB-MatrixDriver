@@ -87,9 +87,8 @@ pixel* frame_buffer::get_row(uint32_t row)
 }
 
 
-void frame_buffer::clear_frame(uint8_t fr)
+void frame_buffer::clear_frame(pixel *frame_ptr)
 {
-   pixel *frame_ptr = fbuf_.at(fr);
    for(uint32_t i = 0; i < height_ * length_; i++)
    {
       frame_ptr->clear();

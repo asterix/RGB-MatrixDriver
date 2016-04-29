@@ -28,8 +28,17 @@ void what::run()
 
    while(run_.load())
    {
-      sleep(1);
-      this->playground();
+      if(this->playground())
+      {
+         // Make the new buffer active
+         fbuf_->change_active_fbuffer();
+
+         // Get the next frame buffer
+         new_fbuf_ = fbuf_->get_idle_fbuffer();
+
+         // Clear frame
+         fbuf_->clear_frame(new_fbuf_);
+      }
    }
 
    LOG_DEBUG("exit from run() of what");
@@ -41,5 +50,13 @@ void what::stop()
 {
    LOG_DEBUG("stop() of what");
    run_.store(false);
+}
+
+
+void what::get_frame_params(uint32_t& l, uint32_t& h, uint8_t& d)
+{
+   l = length_;
+   h = height_;
+   d = depth_;
 }
 

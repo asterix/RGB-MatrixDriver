@@ -103,7 +103,7 @@ public:
    pixel* get_active_fbuffer();
    pixel* get_idle_fbuffer();
    void get_frame_params(uint32_t& l, uint32_t& h, uint8_t& d);
-   void clear_frame(uint8_t fr);
+   void clear_frame(pixel *frame_ptr);
 
    // Frame accessors
    pixel* get_pixel(uint32_t x, uint32_t y);

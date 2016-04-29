@@ -30,18 +30,11 @@ void rgb_matrix::startup()
 }
 
 
-void what::playground()
-{
-   // Your code goes here
-
-}
-
-
 // This is merry downtown!
 void rgb_matrix::run()
 {
    LOG_DEBUG("run() of rgb_matrix");
-   
+
    // Spawn Pixel Driver
    pix_driver pixel_drv(frame_buf_);
    pixel_drv.run_as_thread();
@@ -50,8 +43,6 @@ void rgb_matrix::run()
    what show_what(frame_buf_);
    show_what.run_as_thread();
 
-   sleep(20);
-   show_what.stop();
    // Wait for signal to terminate
    show_what.wait_on_thread();
 

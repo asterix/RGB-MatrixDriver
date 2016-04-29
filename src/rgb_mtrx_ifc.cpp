@@ -27,14 +27,9 @@ bool rgb_mtrx_ifc::startup_gpio()
       return false;
    }
 
-   // Set used GPIO to output
-   uint32_t mask = ((1 << R1) | (1 << B1) | (1 << G1) |
-                    (1 << R2) | (1 << B2) | (1 << G2) |
-                    (1 << A) | (1 << B) | (1 << C) | (1 << D) |
-                    (1 << CLK) | (1 << LAT) | (1 << OE));
    for(int i = 0; i < 28; i++)
    {
-      if(mask & (1 << i))
+      if(full_mask_ & (1 << i))
       {
          io_.set_mode_out(i);
       }

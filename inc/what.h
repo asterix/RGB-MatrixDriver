@@ -31,6 +31,10 @@ private:
    pixel* new_fbuf_;
    volatile std::atomic<bool> run_;
 
+   // Frame params
+   uint32_t height_, length_;
+   uint8_t depth_;
+
 public:
 
    what() = delete;
@@ -39,7 +43,8 @@ public:
       : rt_thread(), fbuf_(f), run_(false)
    {
       LOG_DEBUG("Constructor of what");
-      new_fbuf_ = fbuf_->get_active_fbuffer();
+      new_fbuf_ = fbuf_->get_idle_fbuffer();
+      fbuf_->get_frame_params(length_, height_, depth_);
    }
 
    ~what()
@@ -48,8 +53,9 @@ public:
    }
 
    void run();
-   virtual void playground();
+   virtual bool playground();
    void stop();
+   void get_frame_params(uint32_t& l, uint32_t& h, uint8_t& d);
 
 };
 

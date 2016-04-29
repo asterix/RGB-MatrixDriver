@@ -25,6 +25,10 @@ Created:   25-Apr-2016
 #include "rgb_mtrx_ifc.h"
 
 
+// Clocking a row time in nano-seconds
+#define ROW_WAIT 3400
+
+
 class pix_driver : public rt_thread, public pixel
 {
 private:
@@ -35,8 +39,19 @@ private:
    // Use GPIO interface
    rgb_mtrx_ifc ifc_;
 
+   // Timing constants
+   int row_wait_;
+
+   // Frame params
+   uint32_t height_, length_;
+   uint8_t depth_;
+   uint32_t rows_;
+
    void refresh_matrx();
    void update_fbuffer();
+   void sleep_hold_row(int ns);
+   
+   // Run as thread helpers
    void set_run(bool r);
    bool get_run();
    void run();
@@ -47,10 +62,17 @@ public:
 
    pix_driver(frame_buffer* f)
       : rt_thread(HPRIO), fbuf_(f), run_(false),
-        ifc_()
+        ifc_(), row_wait_(ROW_WAIT)
    {
       LOG_DEBUG("Constructor of pix_driver");
+      fbuf_->get_frame_params(length_, height_, depth_);
       curr_fbuf_ = fbuf_->get_active_fbuffer();
+
+      // rows_ represents the two rows used at once
+      // 16x32 matrix => row 0 and 8 are operated at once
+      // 32x32 matrix => row 0 and 16 are operated at once
+      // 64x32 matrix => row 0 and 32 are operated at once
+      rows_ = height_ / 2;
    }
 
    ~pix_driver()

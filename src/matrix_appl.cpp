@@ -18,10 +18,54 @@ Created:   23-Apr-2016
 
 #include "matrix_appl.h"
 #include "rgb_matrix.h"
+#include "what.h"
+
 
 
 int main(int argc, char *arg[])
 {
    rgb_matrix mtrx;
    mtrx.run();
+
+   return 0;
 }
+
+
+// Your coloring algorithm goes here
+bool what::playground()
+{
+   static bool done = false;
+   uint8_t r, g, b;
+   // Use frame buffer to modify
+   for(uint32_t j = 0; j < height_; j++)
+   {
+      r = g = b = 0;
+
+      if(j % 3 == 0) r = 255;
+      else if(j % 3 == 1) g = 255;
+      else if(j % 3 == 2) b = 255;
+
+      for(uint32_t i = 0; i < length_; i++)
+      {
+         new_fbuf_->r = r;
+         new_fbuf_->g = g;
+         new_fbuf_->b = b;
+         new_fbuf_++;
+      }
+   }
+
+
+   // Stop running
+   if(!done)
+   {
+      done = true;
+      return true;
+   }
+   else
+   {
+      sleep(5);
+      stop();
+      return false;
+   }
+}
+
