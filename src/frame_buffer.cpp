@@ -74,9 +74,9 @@ void frame_buffer::get_frame_params(uint32_t& l, uint32_t& h, uint8_t& d)
 
 
 // Gets a pointer to the pixel at (x,y)
-pixel* frame_buffer::get_pixel(uint32_t x, uint32_t y)
+pixel* frame_buffer::get_pixel(pixel* fbuf, uint32_t x, uint32_t y)
 {
-   return (fbuf_.at(active_buf_) + y * length_ + x);
+   return (fbuf + y * length_ + x);
 }
 
 

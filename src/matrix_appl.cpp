@@ -35,35 +35,39 @@ int main(int argc, char *arg[])
 bool what::playground()
 {
    static bool done = false;
-   uint8_t r, g, b;
-   // Use frame buffer to modify
-   for(uint32_t j = 0; j < height_; j++)
+
+   static uint32_t x = 12, y = 8;
+   uint32_t l = 2;
+
+   sleep(1);
+
+   if(x + l < length_ && y + l < height_)
    {
-      r = g = b = 0;
-
-      if(j % 3 == 0) r = 255;
-      else if(j % 3 == 1) g = 255;
-      else if(j % 3 == 2) b = 255;
-
-      for(uint32_t i = 0; i < length_; i++)
+      for(uint32_t i = x - l; i <= x + l; i++)
       {
-         new_fbuf_->r = r;
-         new_fbuf_->g = g;
-         new_fbuf_->b = b;
-         new_fbuf_++;
+         for(uint32_t j = y - l; j <= y + l; j++)
+         {
+            if(!((i == x + l || i == x - l) && (j == y + l || j == y - l)))
+            {
+               (fbuf_->get_pixel(new_fbuf_, i, j))->r = 255;
+               (fbuf_->get_pixel(new_fbuf_, i, j))->b = 255;
+            }
+         }
       }
+      x++;
    }
-
+   else
+   {
+      done = true;
+   }
 
    // Stop running
    if(!done)
    {
-      done = true;
       return true;
    }
    else
    {
-      sleep(5);
       stop();
       return false;
    }

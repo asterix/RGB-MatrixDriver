@@ -106,7 +106,7 @@ public:
    void clear_frame(pixel *frame_ptr);
 
    // Frame accessors
-   pixel* get_pixel(uint32_t x, uint32_t y);
+   pixel* get_pixel(pixel* fbuf, uint32_t x, uint32_t y);
    pixel* get_row(uint32_t row);
 
 };
