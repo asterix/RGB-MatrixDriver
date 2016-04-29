@@ -22,17 +22,17 @@ Created:   24-Apr-2016
 
 #include <iostream>
 
-#define DEBUG 1
+//#define DEBUG 1
 
 // Logging macros
 #ifdef DEBUG
 #define LOG_DEBUG(x) (std::cout << "DEBUG: " << x << std::endl)
 #else
-#define LOG_DEBUG(x) 
+#define LOG_DEBUG(x)
 #endif
 
 #define LOG_ERROR(x) (std::cout << "ERROR: " << x << std::endl)
-
+#define LOG_PRINT(x) (std::cout << "PRINT: " << x << std::endl)
 
 #endif // _LOGGING_H_
 

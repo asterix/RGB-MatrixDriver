@@ -28,12 +28,10 @@ int main(int argc, char *arg[])
    mtrx.run();
 
    // Wait for user input
-   char c;
-   std::cin >> c;
+   std::cout << "Press any key to exit" << std::endl;
+   std::cin.get();
 
    mtrx.stop();
-
-   c = 0;
    return 0;
 }
 
@@ -45,7 +43,7 @@ bool what::playground()
    uint32_t l = 2;
 
    usleep(300 * 1000);
-      
+
    if(x + l >= length_)
    {
       x = 3;
