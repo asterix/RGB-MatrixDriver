@@ -27,6 +27,13 @@ int main(int argc, char *arg[])
    rgb_matrix mtrx;
    mtrx.run();
 
+   // Wait for user input
+   char c;
+   std::cin >> c;
+
+   mtrx.stop();
+
+   c = 0;
    return 0;
 }
 
@@ -34,12 +41,15 @@ int main(int argc, char *arg[])
 // Your coloring algorithm goes here
 bool what::playground()
 {
-   static bool done = false;
-
-   static uint32_t x = 12, y = 8;
+   static uint32_t x = 3, y = 8;
    uint32_t l = 2;
 
-   sleep(1);
+   usleep(300 * 1000);
+      
+   if(x + l >= length_)
+   {
+      x = 3;
+   }
 
    if(x + l < length_ && y + l < height_)
    {
@@ -56,20 +66,7 @@ bool what::playground()
       }
       x++;
    }
-   else
-   {
-      done = true;
-   }
 
-   // Stop running
-   if(!done)
-   {
-      return true;
-   }
-   else
-   {
-      stop();
-      return false;
-   }
+   return true;
 }
 

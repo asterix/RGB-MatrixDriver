@@ -64,7 +64,7 @@ public:
       // RT thread
    }
 
-   ~rt_thread()
+   virtual ~rt_thread()
    {
 
    }

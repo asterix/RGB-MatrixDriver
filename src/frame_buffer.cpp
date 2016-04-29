@@ -74,16 +74,16 @@ void frame_buffer::get_frame_params(uint32_t& l, uint32_t& h, uint8_t& d)
 
 
 // Gets a pointer to the pixel at (x,y)
-pixel* frame_buffer::get_pixel(pixel* fbuf, uint32_t x, uint32_t y)
+pixel* frame_buffer::get_pixel(pixel *fbuf, uint32_t x, uint32_t y)
 {
    return (fbuf + y * length_ + x);
 }
 
 
 // Gets a pointer to the row head
-pixel* frame_buffer::get_row(uint32_t row)
+pixel* frame_buffer::get_row(pixel *fbuf, uint32_t row)
 {
-   return (fbuf_.at(active_buf_) + row * length_);
+   return (fbuf + row * length_);
 }
 
 

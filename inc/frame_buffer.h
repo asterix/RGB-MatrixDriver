@@ -39,6 +39,9 @@ public:
             b(0), a(0)
    { }
 
+   virtual ~pixel()
+   { }
+
    void clear()
    {
       r = g = b = 0;
@@ -106,8 +109,8 @@ public:
    void clear_frame(pixel *frame_ptr);
 
    // Frame accessors
-   pixel* get_pixel(pixel* fbuf, uint32_t x, uint32_t y);
-   pixel* get_row(uint32_t row);
+   pixel* get_pixel(pixel *frame_ptr, uint32_t x, uint32_t y);
+   pixel* get_row(pixel *frame_ptr, uint32_t row);
 
 };
 

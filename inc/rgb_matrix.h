@@ -20,10 +20,9 @@ Created:   24-Apr-2016
 #define _RGB_MATRIX_H_
 
 
-#include <thread>
-#include <memory>
-#include "rasp_pi_gpio.h"
 #include "frame_buffer.h"
+#include "pix_driver.h"
+#include "what.h"
 
 
 
@@ -36,6 +35,10 @@ private:
    uint16_t num_in_chain_;
 
    frame_buffer *frame_buf_;
+
+   // Threads
+   what *show_what_;
+   pix_driver *pixel_drv_;
 
    void startup();
 
@@ -59,10 +62,13 @@ public:
    ~rgb_matrix()
    {
       LOG_DEBUG("Destructor of rgb_matrix");
+      delete show_what_;
+      delete pixel_drv_;
       delete frame_buf_;
    }
 
    void run();
+   void stop();
 
 };
 
