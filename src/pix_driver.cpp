@@ -131,7 +131,7 @@ void pix_driver::refresh_matrx()
 
          // Wait! How long? - Depends on the weight of bitplane
          // MSB - longest, LSB - shortest (weights 2^d)
-         this->sleep_hold_row(pow(2, d) * row_wait_ - row_wait_);
+         this->sleep_hold_row(pow(2, d) * bit_plane_wait_);
       }
    }
 }
