@@ -24,7 +24,7 @@ Created:   25-Apr-2016
 #include "rt_thread.h"
 
 
-class what : public rt_thread, public pixel
+class what final: public rt_thread, public pixel
 {
 private:
    frame_buffer* fbuf_;
@@ -56,6 +56,7 @@ public:
    virtual bool playground();
    void stop();
    void get_frame_params(uint32_t& l, uint32_t& h, uint8_t& d);
+   void set_pixel(uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b, uint8_t a = 100);
 
 };
 

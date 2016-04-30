@@ -78,50 +78,53 @@ void pix_driver::sleep_hold_row(int ns)
 // Update the display using the active frame buffer
 void pix_driver::refresh_matrx()
 {
-   uint8_t rgb1 = 0, rgb2 = 0, abcd;
-   uint8_t rmsk = 0x04, gmsk = 0x02, bmsk = 0x01;
-   uint8_t nrmsk = 0x03, ngmsk = 0x05, nbmsk = 0x06;
+   uint8_t rgbc = 0, abcd;
 
    // For every double row (each address = two rows)
    for(abcd = 0; abcd < rows_; abcd++)
    {
       ifc_.set_row(abcd);
-      pixel* row1 = curr_fbuf_ + abcd * length_;
-      pixel* row2 = curr_fbuf_ + (abcd + rows_) * length_;
+      pixel *row1 = curr_fbuf_ + abcd * length_, *r1;
+      pixel *row2 = curr_fbuf_ + (abcd + rows_) * length_, *r2;
 
       // For every bit plane of color (color depth)
       for(int d = 0; d < depth_; d++)
       {
          uint8_t curr_depth = (1 << d);
          ifc_.set_lat(0);
-         
+
+         r1 = row1;
+         r2 = row2;
+
          // For every horizontal pixel on the selected rows
          for(uint32_t l = 0; l < length_; l++)
          {
-            (row1 + l)->r & curr_depth ? (rgb1 |= rmsk) : (rgb1 &= nrmsk);
-            (row1 + l)->g & curr_depth ? (rgb1 |= gmsk) : (rgb1 &= ngmsk);
-            (row1 + l)->b & curr_depth ? (rgb1 |= bmsk) : (rgb1 &= nbmsk);
-            
-            (row2 + l)->r & curr_depth ? (rgb2 |= rmsk) : (rgb2 &= nrmsk);
-            (row2 + l)->g & curr_depth ? (rgb2 |= gmsk) : (rgb2 &= ngmsk);
-            (row2 + l)->b & curr_depth ? (rgb2 |= bmsk) : (rgb2 &= nbmsk);
+            if(r1->r & curr_depth) (rgbc |= MR1);
+            if(r1->g & curr_depth) (rgbc |= MG1);
+            if(r1->b & curr_depth) (rgbc |= MB1);
+
+            if(r2->r & curr_depth) (rgbc |= MR2);
+            if(r2->g & curr_depth) (rgbc |= MG2);
+            if(r2->b & curr_depth) (rgbc |= MB2);
 
             // Clock in two rows
-            ifc_.set_clk(0);
-            ifc_.set_rgb1(rgb1);
-            ifc_.set_rgb2(rgb2);
-            ifc_.set_clk(1);
+            ifc_.set_rgb12(rgbc); // CLK = 0
+
+            rgbc = 0;
+            r1++; r2++;
+
+            ifc_.set_clk(1);      // CLK = 1
          }
 
          // Turn OFF
          ifc_.set_oe(1);
-         
+
          // Dummy - remove?
          ifc_.set_row(abcd);
-         
+
          // Latch in clocked rows
          ifc_.set_lat(1);
-         
+
          // Turn ON
          ifc_.set_oe(0);
          ifc_.set_lat(0);

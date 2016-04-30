@@ -29,7 +29,7 @@ Created:   25-Apr-2016
 #define ROW_WAIT 3400
 
 
-class pix_driver : public rt_thread, public pixel
+class pix_driver final: public rt_thread, public pixel
 {
 private:
    frame_buffer* fbuf_;

@@ -57,8 +57,7 @@ bool what::playground()
          {
             if(!((i == x + l || i == x - l) && (j == y + l || j == y - l)))
             {
-               (fbuf_->get_pixel(new_fbuf_, i, j))->r = 255;
-               (fbuf_->get_pixel(new_fbuf_, i, j))->b = 255;
+               set_pixel(i, j, 255, 0, 255);
             }
          }
       }

@@ -22,6 +22,18 @@ Created:   24-Apr-2016
 #include "rasp_pi_gpio.h"
 
 
+enum masks
+{
+   MR1 = 0x04,
+   MG1 = 0x02,
+   MB1 = 0x01,
+   MR2 = 0x20,
+   MG2 = 0x10,
+   MB2 = 0x08,
+   MCL = 0x40
+};
+
+
 class rgb_mtrx_ifc
 {
 public:
@@ -39,9 +51,9 @@ public:
       D = 25,
       CLK = 17,
       LAT = 4,
-      OE = 18     
+      OE = 18
    };
-   
+
 private:
    uint32_t bits_;
    rasp_pi_gpio io_;
@@ -54,7 +66,7 @@ public:
    rgb_mtrx_ifc(): bits_(0), io_(), full_mask_(0)
    {
       LOG_DEBUG("Constructor of rgb_mtrx_ifc");
-      
+
       // Create all used GPIO mask
       full_mask_ = ((1 << R1) | (1 << B1) | (1 << G1) |
                     (1 << R2) | (1 << B2) | (1 << G2) |
@@ -62,8 +74,8 @@ public:
                     (1 << CLK) | (1 << LAT) | (1 << OE));
 
       this->startup_gpio();
-   }
-   
+    }
+
    ~rgb_mtrx_ifc()
    {
       LOG_DEBUG("Destructor of rgb_mtrx_ifc");
@@ -97,6 +109,19 @@ public:
       (rgb & 0x02) ? (bits_ |= (1 << G2)) : (bits_ &= ~(1 << G2));
       (rgb & 0x01) ? (bits_ |= (1 << B2)) : (bits_ &= ~(1 << B2));
       this->update_gpio((1 << R2)|(1 << G2)|(1 << B2));
+   }
+
+   inline void set_rgb12(uint8_t rgbc)
+   {
+      // -CRGBRGB
+      (rgbc & MCL) ? (bits_ |= (1 << CLK)) : (bits_ &= ~(1 << CLK));
+      (rgbc & MR1) ? (bits_ |= (1 << R1)) : (bits_ &= ~(1 << R1));
+      (rgbc & MG1) ? (bits_ |= (1 << G1)) : (bits_ &= ~(1 << G1));
+      (rgbc & MB1) ? (bits_ |= (1 << B1)) : (bits_ &= ~(1 << B1));
+      (rgbc & MR2) ? (bits_ |= (1 << R2)) : (bits_ &= ~(1 << R2));
+      (rgbc & MG2) ? (bits_ |= (1 << G2)) : (bits_ &= ~(1 << G2));
+      (rgbc & MB2) ? (bits_ |= (1 << B2)) : (bits_ &= ~(1 << B2));
+      this->update_gpio((1 << CLK)|(1 << R1)|(1 << G1)|(1 << B1)|(1 << R2)|(1 << G2)|(1 << B2));
    }
 
    inline void set_row(uint8_t dcba)

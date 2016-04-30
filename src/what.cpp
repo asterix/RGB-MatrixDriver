@@ -60,3 +60,13 @@ void what::get_frame_params(uint32_t& l, uint32_t& h, uint8_t& d)
    d = depth_;
 }
 
+
+void what::set_pixel(uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+   pixel* ptr = fbuf_->get_pixel(new_fbuf_, x, y);
+   ptr->r = r;
+   ptr->g = g;
+   ptr->b = b;
+   ptr->a = a;
+}
+
