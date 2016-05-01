@@ -57,13 +57,15 @@ public:
 private:
    uint32_t bits_;
    rasp_pi_gpio io_;
+   rasp_pi_pwm pwm_;
+   
    uint32_t full_mask_;
 
    bool startup_gpio();
    void update_gpio(uint32_t mask);
 
 public:
-   rgb_mtrx_ifc(): bits_(0), io_(), full_mask_(0)
+   rgb_mtrx_ifc(): bits_(0), io_(), pwm_(), full_mask_(0)
    {
       LOG_DEBUG("Constructor of rgb_mtrx_ifc");
 
@@ -80,6 +82,8 @@ public:
    {
       LOG_DEBUG("Destructor of rgb_mtrx_ifc");
    }
+
+   bool startup_pwm(uint32_t t);
 
    inline void set_all()
    {
@@ -170,6 +174,17 @@ public:
       {
          io_.clr_pin(p);
       }
+   }
+
+   inline void pwm_pulse(uint32_t t)
+   {
+      // On GPIO 18
+      pwm_.pwm_pulse(t);
+   }
+
+   inline void pwm_pulse_wait_finish()
+   {
+      pwm_.pwm_wait_fifo_empty();
    }
 };
 

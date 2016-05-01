@@ -18,7 +18,6 @@ Created:   25-Apr-2016
 
 #include "pix_driver.h"
 #include <ctime>
-#include <cmath>
 
 
 
@@ -79,11 +78,19 @@ void pix_driver::sleep_hold_row(int ns)
 void pix_driver::refresh_matrx()
 {
    uint8_t rgbc = 0, abcd;
+   
+   // Start with LAT = 0
+   ifc_.set_lat(0);
 
-   // For every double row (each address = two rows)
+   // For every double row (each address = two rows - twin row)
    for(abcd = 0; abcd < rows_; abcd++)
    {
+      // Wait until the previous twin row has finished
+      ifc_.pwm_pulse_wait_finish();
+
+      // Go to next twin row
       ifc_.set_row(abcd);
+      
       pixel *row1 = curr_fbuf_ + abcd * length_, *r1;
       pixel *row2 = curr_fbuf_ + (abcd + rows_) * length_, *r2;
 
@@ -91,7 +98,6 @@ void pix_driver::refresh_matrx()
       for(int d = 0; d < depth_; d++)
       {
          uint8_t curr_depth = (1 << d);
-         ifc_.set_lat(0);
 
          r1 = row1;
          r2 = row2;
@@ -116,22 +122,15 @@ void pix_driver::refresh_matrx()
             ifc_.set_clk(1);      // CLK = 1
          }
 
-         // Turn OFF
-         ifc_.set_oe(1);
-
-         // Dummy - remove?
-         ifc_.set_row(abcd);
+         // Wait until the previous bitplane is complete
+         ifc_.pwm_pulse_wait_finish();
 
          // Latch in clocked rows
          ifc_.set_lat(1);
-
-         // Turn ON
-         ifc_.set_oe(0);
          ifc_.set_lat(0);
 
-         // Wait! How long? - Depends on the weight of bitplane
-         // MSB - longest, LSB - shortest (weights 2^d)
-         this->sleep_hold_row(pow(2, d) * bit_plane_wait_);
+         // Turn ON for bitplane weighted time
+         ifc_.pwm_pulse(bit_plane_times_.at(d));
       }
    }
 }

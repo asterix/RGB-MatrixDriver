@@ -158,8 +158,8 @@ public:
 //  PWM
 //---------
 
-#define CM_PLLD_FREQ     500000000
-
+#define CM_PLLD_FREQ     500 // MHz
+#define CM_PWM_FREQ      CM_PLLD_FREQ
 
 // PWM accessor
 class rasp_pi_pwm : private rasp_pi_gpio
@@ -243,7 +243,7 @@ public:
       }
    }
 
-   void pwm_module_setup(uint32_t divider);
+   bool pwm_module_setup(uint32_t divider);
    void pwm_pulse(uint32_t t);
    void pwm_wait_fifo_empty();
 

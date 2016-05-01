@@ -23,10 +23,11 @@ Created:   25-Apr-2016
 #include "frame_buffer.h"
 #include "rt_thread.h"
 #include "rgb_mtrx_ifc.h"
+#include <cmath>
 
-
-// Clocking a row time in nano-seconds
-#define ROW_WAIT 1250
+// Time weight for bitplane 0 of colors (nano-secs)
+#define BIT0_COLOR_TIME 124
+#define ROW_WAIT        1250
 
 
 class pix_driver final: public rt_thread, public pixel
@@ -36,11 +37,12 @@ private:
    pixel* curr_fbuf_;
    std::atomic<bool> run_;
 
-   // Use GPIO interface
+   // Use GPIO + Peripheral interface
    rgb_mtrx_ifc ifc_;
 
-   // Timing constants
-   int bit_plane_wait_;
+   // Timing constants for each bitplane
+   uint32_t bit_plane_wait_;
+   std::vector<uint32_t> bit_plane_times_;
 
    // Frame params
    uint32_t height_, length_;
@@ -73,6 +75,17 @@ public:
       // 32x32 matrix => row 0 and 16 are operated at once
       // 64x32 matrix => row 0 and 32 are operated at once
       rows_ = height_ / 2;
+
+      // Pre-fill time weights for each bitplane
+      for(uint32_t i = 0; i < depth_; i++)
+      {
+         // Weights = [2, 4, 8, 16, 32, 64, 128, 256]
+         //         LSB^                        MSB^
+         bit_plane_times_.push_back(pow(2, i+1));
+      }
+
+      // PWM startup
+      ifc_.startup_pwm(BIT0_COLOR_TIME);
    }
 
    ~pix_driver()

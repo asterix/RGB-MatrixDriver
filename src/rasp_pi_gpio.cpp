@@ -146,14 +146,20 @@ void rasp_pi_gpio::set_gpclr0(uint32_t w)
 //---------
 
 // Initialize PWM Module
-void rasp_pi_pwm::pwm_module_setup(uint32_t divider)
+bool rasp_pi_pwm::pwm_module_setup(uint32_t divider)
 {
    divider_ = divider;
    clkfreq_ = CM_PLLD_FREQ / divider;
    
-   this->pwm_init();
-   this->pwm_config();
-   this->pwm_setup(divider);
+   bool result = this->pwm_init();
+
+   if(result)
+   {
+      this->pwm_config();
+      this->pwm_setup(divider);
+   }
+
+   return result;
 }
 
 
@@ -239,14 +245,19 @@ void rasp_pi_pwm::pwm_config()
 // Generate a pulse of time t(ns)
 void rasp_pi_pwm::pwm_pulse(uint32_t t)
 {
-   uint32_t arr[8] = {2, 4, 8, 16, 32, 64, 128, 256};
+   // RNG - Contains period of PWM = M
+   *(pwm_ + PWM_RNG1_OFF) = t;
 
-   *(pwm_ + PWM_RNG1_OFF) = arr[t];
-   *(pwm_ + PWM_FIF1_OFF) = arr[t];
+   // FIFO - Contains duty cycle of PWM = N
+   *(pwm_ + PWM_FIF1_OFF) = t;
 
+   // PWM shape = N high cycles -> (N-M) low cycles (both inverted if POLA1 = 1)
+
+   // Termination and return to normal state
    *(pwm_ + PWM_FIF1_OFF) = 0;
    *(pwm_ + PWM_FIF1_OFF) = 0;
    
+   // Turn ON PWM
    *(pwm_ + PWM_CTL_OFF) = ((1 << USEF1) | (1 << POLA1) | (1 << PWMEN1));
 }
 
@@ -259,6 +270,7 @@ void rasp_pi_pwm::pwm_wait_fifo_empty()
       asm("");
    }
    
+   // Clear FIFO
    *(pwm_ + PWM_CTL_OFF) = ((1 << CLRF1) | (1 << USEF1) | (1 << POLA1));
    usleep(10);
 }

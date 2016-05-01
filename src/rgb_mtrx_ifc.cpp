@@ -40,6 +40,24 @@ bool rgb_mtrx_ifc::startup_gpio()
 }
 
 
+// Startup PWM Module
+bool rgb_mtrx_ifc::startup_pwm(uint32_t pwm_bit)
+{
+   // t is cycle time needed in nano-seconds
+   uint32_t div = ((CM_PWM_FREQ * pwm_bit) / (1000));
+   
+   LOG_DEBUG("PWM clock divider = "+ std::to_string(div));
+
+   if(!pwm_.pwm_module_setup(div))
+   {
+      LOG_ERROR("PWM init failed :(");
+      return false;
+   }
+
+   return true;
+}
+
+
 void rgb_mtrx_ifc::update_gpio(uint32_t mask)
 {
    // Write straight to GPSET0 register
