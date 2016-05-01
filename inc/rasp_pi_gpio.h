@@ -47,11 +47,53 @@ Created:   23-Apr-2016
 #define GPLEV_OFF        0x0D // GPLEV0
 
 
-// Mem mapped IO space
-#define REG_BLOCK_LEN    (1024 * 4)
+// Mem mapped access space
+#define GIO_BLOCK_LEN    0xCE
+#define CLK_BLOCK_LEN    0x1C8
+#define PWM_BLOCK_LEN    0x48
 
 
-// GPIO accessor
+// PWM register offsets
+#define PWM_BASE         (RASP_PI_X_BASE + 0x20C000)
+#define PWM_CTL_OFF      0x00
+#define PWM_STA_OFF      0x01
+#define PWM_DMAC_OFF     0x02
+#define PWM_RNG1_OFF     0x04
+#define PWM_DAT1_OFF     0x05
+#define PWM_FIF1_OFF     0x06
+#define PWM_RNG2_OFF     0x08
+#define PWM_DAT2_OFF     0x09
+
+
+// Clock management register offsets
+#define CLK_BASE         (RASP_PI_X_BASE + 0x101000)
+#define CM_PWMCTL_OFF    0x28
+#define CM_PWMDIV_OFF    0x29
+
+
+// CLK CTL bits
+#define CM_CTL_SRC(x)    ((x) << 0)
+#define CM_CTL_ENAB      (1 << 4)
+#define CM_CTL_KILL      (1 << 5)
+#define CM_CTL_BUSY      (1 << 7)
+#define CM_CTL_FLIP      (1 << 8)
+#define CM_CTL_MASH(x)   ((x) << 9)
+#define CLK_PASSWD       (0x5A << 24)
+#define CM_SRC_OSC       1
+#define CM_SRC_PLLD      6
+
+
+// CLK DIV bits
+#define CM_DIV_DIVF(x)   ((x) << 0)
+#define CM_DIV_DIVI(x)   ((x) << 12)
+
+
+
+//---------
+//  GPIO
+//---------
+
+// GPIO + Peripheral accessor
 class rasp_pi_gpio
 {
 public:
@@ -74,6 +116,9 @@ private:
    volatile uint32_t *io_gpclr_;
    volatile uint32_t *io_gplev_;
 
+protected:   
+   void* mmap_peripheral(uint32_t base, uint32_t len);
+
 public:
    rasp_pi_gpio(): gpio_fd_(-1),
                    io_port_(nullptr),
@@ -84,12 +129,12 @@ public:
       LOG_DEBUG("Constructor of rasp_pi_gpio");
    }
 
-   ~rasp_pi_gpio()
+   virtual ~rasp_pi_gpio()
    {
       LOG_DEBUG("Destructor of rasp_pi_gpio");
-      if(gpio_fd_ > 0)
+      if(io_port_ != nullptr)
       {
-         munmap((void *)io_port_, REG_BLOCK_LEN);
+         munmap((void *)io_port_, GIO_BLOCK_LEN);
       }
    }
 
@@ -105,6 +150,103 @@ public:
    
    void set_gpset0(uint32_t w);
    void set_gpclr0(uint32_t w);
+};
+
+
+
+//---------
+//  PWM
+//---------
+
+#define CM_PLLD_FREQ     500000000
+
+
+// PWM accessor
+class rasp_pi_pwm : private rasp_pi_gpio
+{
+public:
+   enum ctl_bits
+   {
+      PWMEN1 = 0,
+      MODE1 = 1,
+      RPTL1 = 2,
+      SBIT1 = 3,
+      POLA1 = 4,
+      USEF1 = 5,
+      CLRF1 = 6,
+      MSEN1 = 7,
+      PWMEN2 = 8,
+      MODE2 = 9,
+      RPTL2 = 10,
+      SBIT2 = 11,
+      POLA2 = 12,
+      USEF2 = 13,
+      MSEN2 = 15
+   };
+
+   enum sta_bits
+   {
+      FULL1 = 0,
+      EMPT1 = 1,
+      WERR1 = 2,
+      RERR1 = 3,
+      GAPO1 = 4,
+      GAPO2 = 5,
+      GAPO3 = 6,
+      GAPO4 = 7,
+      BERR  = 8,
+      STA1  = 9,
+      STA2  = 10,
+      STA3  = 11,
+      STA4  = 12
+   };
+
+   enum dmac_bits
+   {
+      ENAB = 31
+   };
+
+protected:
+   volatile uint32_t *clkm_;
+   volatile uint32_t *pwm_;
+   volatile uint32_t *pwm_fifo_;
+
+private:
+   uint32_t divider_;
+   uint32_t clkfreq_;
+
+   void pwm_setup(uint32_t divider);
+   void pwm_config();
+   bool pwm_init();
+
+public:
+   rasp_pi_pwm()
+      : clkm_(nullptr), pwm_(nullptr), divider_(0), clkfreq_(0)
+   {
+      LOG_DEBUG("Constructor of rasp_pi_pwm");
+   }
+
+   virtual ~rasp_pi_pwm()
+   {
+      LOG_DEBUG("Destructor of rasp_pi_pwm");
+      if(clkm_ != nullptr)
+      {
+         // Stop clocks
+         *(clkm_ + CM_PWMCTL_OFF) = (CLK_PASSWD | CM_CTL_KILL);
+         munmap((void *)clkm_, CLK_BLOCK_LEN);
+      }
+
+      if(pwm_ != nullptr)
+      {
+         *(pwm_ + PWM_CTL_OFF) = 0;
+         munmap((void *)pwm_, PWM_BLOCK_LEN);
+      }
+   }
+
+   void pwm_module_setup(uint32_t divider);
+   void pwm_pulse(uint32_t t);
+   void pwm_wait_fifo_empty();
+
 };
 
 
