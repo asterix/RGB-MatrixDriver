@@ -39,12 +39,12 @@ int main(int argc, char *arg[])
 // Your coloring algorithm goes here
 bool what::playground()
 {
-   static uint32_t x = 3, y = 8;
-   uint32_t l = 2;
+   //static uint32_t x = 3, y = 8;
+   // uint32_t l = 2;
 
    usleep(300 * 1000);
 
-   if(x + l >= length_)
+   /*if(x + l >= length_)
    {
       x = 3;
    }
@@ -62,6 +62,14 @@ bool what::playground()
          }
       }
       x++;
+   }*/
+
+   for(uint32_t x = 0; x < length_; x++)
+   {
+      for(uint32_t y = 0; y < height_; y++)
+      {
+         set_pixel(x, y, rand()%255, rand()%255, rand()%255);
+      }
    }
 
    return true;

@@ -26,7 +26,7 @@ Created:   25-Apr-2016
 
 
 // Clocking a row time in nano-seconds
-#define ROW_WAIT 3400
+#define ROW_WAIT 1250
 
 
 class pix_driver final: public rt_thread, public pixel
@@ -40,7 +40,7 @@ private:
    rgb_mtrx_ifc ifc_;
 
    // Timing constants
-   int row_wait_;
+   int bit_plane_wait_;
 
    // Frame params
    uint32_t height_, length_;
@@ -50,7 +50,7 @@ private:
    void refresh_matrx();
    void update_fbuffer();
    void sleep_hold_row(int ns);
-   
+
    // Run as thread helpers
    void set_run(bool r);
    bool get_run();
@@ -62,7 +62,7 @@ public:
 
    pix_driver(frame_buffer* f)
       : rt_thread(HPRIO), fbuf_(f), run_(false),
-        ifc_(), row_wait_(ROW_WAIT)
+        ifc_(), bit_plane_wait_(ROW_WAIT)
    {
       LOG_DEBUG("Constructor of pix_driver");
       fbuf_->get_frame_params(length_, height_, depth_);
