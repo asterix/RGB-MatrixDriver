@@ -25,7 +25,8 @@ Created:   25-Apr-2016
 #include "rgb_mtrx_ifc.h"
 #include <cmath>
 
-// Time weight for bitplane 0 of colors (nano-secs)
+// Time weight for bitplane 0 of colors (nano-secs) (scaled by 2 internally)
+// 124 ns -> Lesser consumes less power, increases frame rate, but runs dimmer
 #define BIT0_COLOR_TIME 124
 #define ROW_WAIT        1250
 

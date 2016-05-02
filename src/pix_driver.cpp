@@ -78,19 +78,16 @@ void pix_driver::sleep_hold_row(int ns)
 void pix_driver::refresh_matrx()
 {
    uint8_t rgbc = 0, abcd;
-   
+
    // Start with LAT = 0
    ifc_.set_lat(0);
 
    // For every double row (each address = two rows - twin row)
    for(abcd = 0; abcd < rows_; abcd++)
    {
-      // Wait until the previous twin row has finished
-      ifc_.pwm_pulse_wait_finish();
-
       // Go to next twin row
       ifc_.set_row(abcd);
-      
+
       pixel *row1 = curr_fbuf_ + abcd * length_, *r1;
       pixel *row2 = curr_fbuf_ + (abcd + rows_) * length_, *r2;
 
@@ -132,6 +129,9 @@ void pix_driver::refresh_matrx()
          // Turn ON for bitplane weighted time
          ifc_.pwm_pulse(bit_plane_times_.at(d));
       }
+
+      // Wait until the previous bitplane is complete
+      ifc_.pwm_pulse_wait_finish();
    }
 }
 
