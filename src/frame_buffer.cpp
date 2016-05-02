@@ -31,8 +31,11 @@ void frame_buffer::init_fbuf()
 
 void frame_buffer::change_active_fbuffer()
 {
-   int num_bufs = fbuf_.size();
-   active_buf_ = ++active_buf_ % num_bufs;
+   uint8_t num_bufs = static_cast<uint8_t>(fbuf_.size());
+   register uint8_t temp_active = active_buf_.load() + 1;
+
+   temp_active = temp_active % num_bufs;
+   active_buf_.store(temp_active);
 
    taken_.store(false);
 
@@ -43,7 +46,7 @@ void frame_buffer::change_active_fbuffer()
 
 pixel* frame_buffer::get_active_fbuffer()
 {
-   pixel *res = fbuf_.at(active_buf_);
+   pixel *res = fbuf_.at(active_buf_.load());
 
    // Say taken to unblock frame updater
    taken_.store(true);
@@ -54,7 +57,7 @@ pixel* frame_buffer::get_active_fbuffer()
 uint8_t frame_buffer::next_idle_buf()
 {
    int num_bufs = fbuf_.size();
-   return ((active_buf_ + 1) % num_bufs);
+   return ((active_buf_.load() + 1) % num_bufs);
 }
 
 
