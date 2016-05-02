@@ -28,19 +28,28 @@ Created:   26-Apr-2016
 class rt_thread
 {
 public:
-   enum
+   enum thread_prio
    {
       // Change scheduling policy SCHED_FIFO or SCHED_RR
       // 1-99, 99 being the highest priority
       NORMAL = 0,
-      HPRIO = 20, 
-      MPRIO = 10, 
-      LPRIO = 5,
+      HPRIO = 99, 
+      MPRIO = 50, 
+      LPRIO = 10,
       OTHER = 3
+   };
+
+   enum cpu_core
+   {
+      CPU_CORE0 = 0,
+      CPU_CORE1,
+      CPU_CORE2,
+      CPU_CORE3
    };
 
 private:
    int prio_;
+   uint32_t cpu_aff_;
    int policy_;
    pthread_t th_;
 
@@ -53,13 +62,13 @@ protected:
 
 public:
    rt_thread()
-      : prio_(NORMAL), policy_(SCHED_OTHER)
+      : prio_(NORMAL), cpu_aff_(0), policy_(SCHED_OTHER)
    {
       // Not an RT thread
    }
 
-   rt_thread(int pri, int sch = SCHED_FIFO)
-      : prio_(pri), policy_(sch)
+   rt_thread(int pri, uint32_t cpuaff, int sch = SCHED_FIFO)
+      : prio_(pri), cpu_aff_(cpuaff), policy_(sch)
    {
       // RT thread
    }

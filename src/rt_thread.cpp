@@ -44,6 +44,37 @@ bool rt_thread::run_as_thread()
          struct sched_param sch;
          sch.sched_priority = prio_;
          pthread_setschedparam(th_, policy_, &sch);
+
+         if(result != 0)
+         {
+            LOG_ERROR("Thread priority could not be set to "+ std::to_string(prio_)+
+                  " :( Failed with error code: "+ std::to_string(result));
+         }
+
+      }
+
+      // Bind the thread to any CPU cores?
+      if(cpu_aff_ != 0)
+      {
+         cpu_set_t cpuset;
+
+         // Clear CPU mask
+         CPU_ZERO(&cpuset);
+
+         for(int i = 0; i < 32; i++)
+         {
+            if(cpu_aff_ & (1 << i))
+            {
+               CPU_SET(i, &cpuset);
+            }
+         }
+
+         result = pthread_setaffinity_np(th_, sizeof(cpuset), &cpuset);
+         if(result != 0)
+         {
+            LOG_ERROR("Thread affinity could not be set :( Failed with error code: "
+                  + std::to_string(result));
+         }
       }
    }
 
