@@ -18,6 +18,7 @@ Created:   23-Apr-2016
 
 #include "matrix_appl.h"
 #include "rgb_matrix.h"
+#include "ppm_parser.h"
 #include "what.h"
 
 
@@ -44,6 +45,7 @@ bool what::playground()
 
    usleep(300 * 1000);
 
+   // Moving ball
    /*if(x + l >= length_)
    {
       x = 3;
@@ -64,11 +66,38 @@ bool what::playground()
       x++;
    }*/
 
-   for(uint32_t x = 0; x < length_; x++)
+   // Random colors
+   /*for(uint32_t x = 0; x < length_; x++)
    {
       for(uint32_t y = 0; y < height_; y++)
       {
          set_pixel(x, y, rand()%255, rand()%255, rand()%255);
+      }
+   }*/
+
+   // Smiley face
+   ppm_parser pr;
+   color_buffer cbuf1, cbuf2;
+
+   pr.parse("smiley16none.ppm", &cbuf1);
+   pr.parse("frownyw.ppm", &cbuf2);
+
+   for(uint32_t x = 0; x < length_; x++)
+   {
+      for(uint32_t y = 0; y < height_; y++)
+      {
+         if(x < cbuf1.length)
+         {
+            set_pixel(x, y, cbuf1.pix[x + cbuf1.length * y].r,
+                            cbuf1.pix[x + cbuf1.length * y].g,
+                            cbuf1.pix[x + cbuf1.length * y].b);
+         }
+         else
+         {
+            set_pixel(x, y, cbuf2.pix[x - cbuf1.length + cbuf2.length * y].r,
+                            cbuf2.pix[x - cbuf1.length + cbuf2.length * y].g,
+                            cbuf2.pix[x - cbuf1.length + cbuf2.length * y].b);
+         }
       }
    }
 

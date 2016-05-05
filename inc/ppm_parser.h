@@ -22,7 +22,9 @@ Created:   03-May-2016
 
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <string>
+#include <cstdlib>
 #include "logging.h"
 #include "frame_buffer.h"
 
@@ -34,15 +36,16 @@ struct color_buffer
 {
    uint32_t height;
    uint32_t length;
+   uint32_t depth;
    pixel* pix;
 
    color_buffer()
    {
-      height = length = 0;
+      height = length = depth = 0;
       pix = nullptr;
    }
 
-   clear()
+   void clear()
    {
       delete[] pix;
       pix = nullptr;
@@ -63,8 +66,8 @@ private:
    std::ifstream flh_;
 
    // Parsers
-   void parse_p3(color_buf *buf);
-   void parse_p6(color_buf *buf);
+   void parse_p3(color_buffer *buf);
+   void parse_p6(color_buffer *buf);
 
 public:
 
