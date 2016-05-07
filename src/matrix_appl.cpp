@@ -17,9 +17,6 @@ Created:   23-Apr-2016
 ---------------------------------------------------------------------------*/
 
 #include "matrix_appl.h"
-#include "rgb_matrix.h"
-#include "ppm_parser.h"
-#include "what.h"
 
 
 
@@ -33,6 +30,7 @@ int main(int argc, char *arg[])
    std::cin.get();
 
    mtrx.stop();
+
    return 0;
 }
 

@@ -24,6 +24,7 @@ SRCS    = rasp_pi_gpio.cpp \
           pix_driver.cpp \
           what.cpp \
           ppm_parser.cpp \
+          glyph_loader.cpp \
           matrix_appl.cpp
 
 OBJS    = $(addprefix $(OBJ)/,$(subst .cpp,.o,$(SRCS)))
