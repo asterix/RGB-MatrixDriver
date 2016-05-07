@@ -79,8 +79,8 @@ bool what::playground()
    ppm_parser pr;
    color_buffer cbuf1, cbuf2;
 
-   pr.parse("smiley16none.ppm", &cbuf1);
-   pr.parse("frownyw.ppm", &cbuf2);
+   pr.parse("./emoticons/smiley16none.ppm", &cbuf1);
+   pr.parse("./emoticons/frownyw.ppm", &cbuf2);
 
    for(uint32_t x = 0; x < length_; x++)
    {
