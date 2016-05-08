@@ -19,61 +19,20 @@ Created:   23-Apr-2016
 #include "matrix_appl.h"
 
 
+// Font store
+fontizer fz("./bdf-fonts/9x15B.bdf");
+
 
 int main(int argc, char *arg[])
 {
-   /*rgb_matrix mtrx;
+   rgb_matrix mtrx;
    mtrx.run();
 
    // Wait for user input
    std::cout << "Press any key to exit" << std::endl;
    std::cin.get();
 
-   mtrx.stop();*/
-
-   fontizer fz("./bdf-fonts/8x13B.bdf");
-   std::string sample = "2,O'Clock";
-   color_buffer clrbuf;
-
-   // Determine color buffer size
-   int fboxw, fboxh;
-   fz.get_font_properties(fboxw, fboxh);
-
-   // Set color buffer params
-   clrbuf.length = fboxw * sample.size();
-   clrbuf.height = 16; // Let's keep this fixed for now
-   clrbuf.depth = 8;   // 8-bit color
-
-   // Allocate pixel memory
-   clrbuf.pix = new pixel[clrbuf.length * clrbuf.height];
-
-   // Start at (0,0)
-   int xcursor = 0;
-
-   for(size_t i = 0; i < sample.size(); i++)
-   {
-      xcursor += fz.draw(&clrbuf, xcursor, 0, sample[i]);
-   }
-
-   // Dummy print
-   for(uint32_t y = 0; y < clrbuf.height; y++)
-   {
-      uint32_t col = y * clrbuf.length;
-      for(uint32_t x = 0; x < clrbuf.length; x++)
-      {
-         if(clrbuf.pix[col + x].r == 255)
-         {
-            std::cout << "@";
-         }
-         else
-         {
-            std::cout << "-";
-         }
-      }
-      std::cout << std::endl;
-   }   
-
-   std::cin.get();
+   mtrx.stop();
 
    return 0;
 }
@@ -82,9 +41,78 @@ int main(int argc, char *arg[])
 // Your coloring algorithm goes here
 bool what::playground()
 {
+   static bool fresh = true;
+   static color_buffer clrbuf;
+   static uint32_t xscroll = 0;
+   
+   // Set text colors
+   pixel fore;
+   fore.r = 238; fore.g = 154; fore.b = 0;
+   pixel back;
+   back.r = back.g = back.b = 0;
 
+   std::string sample = "Isn't this so cool? :)   ";
 
+   if(fresh)
+   {
+      // Determine color buffer size
+      int fboxw, fboxh;
+      fz.get_font_properties(fboxw, fboxh);
 
+      // Clear and free pixels before overwriting
+      clrbuf.clear();
+   
+      // Set color buffer params
+      clrbuf.length = fboxw * sample.size();
+      clrbuf.height = height_;
+      clrbuf.depth = 8;
+   
+      // Allocate pixel memory
+      clrbuf.pix = new pixel[clrbuf.length * clrbuf.height];
+   
+      // Start at (0,0)
+      int xcursor = 0;
+   
+      for(size_t i = 0; i < sample.size(); i++)
+      {
+         xcursor += fz.draw(&clrbuf, xcursor, 0, &fore, &back, sample[i]);
+      }
+
+      fresh = false;
+   }
+
+   pixel* scroll_ptr = clrbuf.pix + xscroll;
+
+   // Load into frame-buffer
+   for(uint32_t y = 0; y < height_; y++)
+   {
+      uint32_t col = y * clrbuf.length;
+      for(uint32_t x = 0; x < length_; x++)
+      {
+         if(x < clrbuf.length)
+         {
+            set_pixel(x, y, scroll_ptr[col + x].r,
+                            scroll_ptr[col + x].g,
+                            scroll_ptr[col + x].b);
+         }
+         else
+         {
+            set_pixel(x, y, 0, 0, 0);
+         }
+      }
+   }
+
+   // Progressive scrolling
+   if(xscroll >= (clrbuf.length - length_))
+   {
+      xscroll = 0;
+   }
+   else
+   {
+      xscroll++;
+   }
+
+   usleep(50 * 1000);
    return true;
 }
 
@@ -227,9 +255,84 @@ bool what::playground()
 
 
 
-// (5)
+// (5) Scrolling text
+static bool fresh = true;
+   static color_buffer clrbuf;
+   static uint32_t xscroll = 0;
+
+   // Set text colors
+   pixel fore;
+   fore.r = 238; fore.g = 154; fore.b = 0;
+   pixel back;
+   back.r = back.g = back.b = 0;
+
+   std::string sample = "Isn't this so cool? :)   ";
+
+   if(fresh)
+   {
+      // Determine color buffer size
+      int fboxw, fboxh;
+      fz.get_font_properties(fboxw, fboxh);
+
+      // Clear and free pixels before overwriting
+      clrbuf.clear();
+
+      // Set color buffer params
+      clrbuf.length = fboxw * sample.size();
+      clrbuf.height = height_;
+      clrbuf.depth = 8;
+
+      // Allocate pixel memory
+      clrbuf.pix = new pixel[clrbuf.length * clrbuf.height];
+
+      // Start at (0,0)
+      int xcursor = 0;
+
+      for(size_t i = 0; i < sample.size(); i++)
+      {
+         xcursor += fz.draw(&clrbuf, xcursor, 0, &fore, &back, sample[i]);
+      }
+
+      fresh = false;
+   }
+
+   pixel* scroll_ptr = clrbuf.pix + xscroll;
+
+   // Load into frame-buffer
+   for(uint32_t y = 0; y < height_; y++)
+   {
+      uint32_t col = y * clrbuf.length;
+      for(uint32_t x = 0; x < length_; x++)
+      {
+         if(x < clrbuf.length)
+         {
+            set_pixel(x, y, scroll_ptr[col + x].r,
+                            scroll_ptr[col + x].g,
+                            scroll_ptr[col + x].b);
+         }
+         else
+         {
+            set_pixel(x, y, 0, 0, 0);
+         }
+      }
+   }
+
+   // Progressive scrolling
+   if(xscroll >= (clrbuf.length - length_))
+   {
+      xscroll = 0;
+   }
+   else
+   {
+      xscroll++;
+   }
+
+   usleep(50 * 1000);
+   return true;
+
 
 // (6)
+
 
 #endif
 
