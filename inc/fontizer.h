@@ -40,7 +40,9 @@ public:
    fontizer(std::string fontfile)
       : glyfer_(fontfile), baseline_(0)
    {
-
+      int h, hoff, dummy;
+      this->get_font_properties(dummy, h, dummy, hoff);
+      baseline_ = h + hoff;
    }
 
    ~fontizer()
