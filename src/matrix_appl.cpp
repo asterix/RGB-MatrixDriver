@@ -31,8 +31,8 @@ int main(int argc, char *arg[])
 
    mtrx.stop();*/
 
-   fontizer fz("./bdf-fonts/9x15.bdf");
-   std::string sample = "Wow!";
+   fontizer fz("./unifont/unifont-8.0.01.bdf");
+   std::string sample = "2,O'Clock";
    color_buffer clrbuf;
 
    // Determine color buffer size
@@ -52,15 +52,16 @@ int main(int argc, char *arg[])
 
    for(size_t i = 0; i < sample.size(); i++)
    {
-      fz.draw(&clrbuf, xcursor, 0, sample[i]);
+      xcursor += fz.draw(&clrbuf, xcursor, 0, sample[i]);
    }
 
    // Dummy print
-   for(uint32_t y = 0; y < clrbuf.length; y++)
+   for(uint32_t y = 0; y < clrbuf.height; y++)
    {
-      for(uint32_t x = 0; x < clrbuf.height; x++)
+      uint32_t col = y * clrbuf.length;
+      for(uint32_t x = 0; x < clrbuf.length; x++)
       {
-         if(clrbuf.pix[y * clrbuf.length + x].r == 255)
+         if(clrbuf.pix[col + x].r == 255)
          {
             std::cout << "@";
          }

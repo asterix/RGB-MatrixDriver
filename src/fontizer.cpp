@@ -62,27 +62,27 @@ int fontizer::draw(color_buffer *clrbuf, uint32_t xpos, uint32_t ypos,
       {
          // Pre-calculate column jump
          uint32_t col = (ypos + y) * clrbuf->length;
+         
+         // Starting point for each row
+         pixel *row = clrbuf->pix + col + xpos;         
 
          for(int x = 0; x < glyf->width; x++)
          {
             if((xpos + x) < clrbuf->length)
             {
-               // Starting point for each row
-               color_buffer *row = clrbuf + col + xpos;
-      
                if((glyf->bitmap[y] << x) & BMAPMASK)
                {
-                  row[x].pix->r = foreclr->r;
-                  row[x].pix->g = foreclr->g;
-                  row[x].pix->b = foreclr->b;
-                  row[x].pix->a = foreclr->a;
+                  row[x].r = foreclr->r;
+                  row[x].g = foreclr->g;
+                  row[x].b = foreclr->b;
+                  row[x].a = foreclr->a;
                }
                else
                {
-                  row[x].pix->r = backclr->r;
-                  row[x].pix->g = backclr->g;
-                  row[x].pix->b = backclr->b;
-                  row[x].pix->a = backclr->a;
+                  row[x].r = backclr->r;
+                  row[x].g = backclr->g;
+                  row[x].b = backclr->b;
+                  row[x].a = backclr->a;
                }
             }
          }
