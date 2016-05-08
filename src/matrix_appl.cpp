@@ -31,7 +31,7 @@ int main(int argc, char *arg[])
 
    mtrx.stop();*/
 
-   fontizer fz("./unifont/unifont-8.0.01.bdf");
+   fontizer fz("./bdf-fonts/8x13B.bdf");
    std::string sample = "2,O'Clock";
    color_buffer clrbuf;
 
@@ -71,12 +71,9 @@ int main(int argc, char *arg[])
          }
       }
       std::cout << std::endl;
-   }
-
+   }   
 
    std::cin.get();
-
-
 
    return 0;
 }
@@ -85,13 +82,41 @@ int main(int argc, char *arg[])
 // Your coloring algorithm goes here
 bool what::playground()
 {
-   //static uint32_t x = 3, y = 8;
-   // uint32_t l = 2;
+
+
+
+   return true;
+}
+
+
+
+
+
+// Usage examples' section
+// Copy-paste the sections into relevant places for checkout
+#if 0
+
+// (1) Random colors
+   // Copy into playground()
+   for(uint32_t x = 0; x < length_; x++)
+   {
+      for(uint32_t y = 0; y < height_; y++)
+      {
+         set_pixel(x, y, rand()%255, rand()%255, rand()%255);
+      }
+   }
+   return true;
+
+
+
+// (2) Moving ball
+   // Copy into playground()
+   static uint32_t x = 3, y = 8;
+   uint32_t l = 2;
 
    usleep(300 * 1000);
 
-   // Moving ball
-   /*if(x + l >= length_)
+   if(x + l >= length_)
    {
       x = 3;
    }
@@ -109,18 +134,13 @@ bool what::playground()
          }
       }
       x++;
-   }*/
+   }
+   return true;
 
-   // Random colors
-   /*for(uint32_t x = 0; x < length_; x++)
-   {
-      for(uint32_t y = 0; y < height_; y++)
-      {
-         set_pixel(x, y, rand()%255, rand()%255, rand()%255);
-      }
-   }*/
 
-   // Smiley face
+
+// (3)
+   // Two emoticons :) :(
    ppm_parser pr;
    color_buffer cbuf1, cbuf2;
 
@@ -145,7 +165,71 @@ bool what::playground()
          }
       }
    }
-
    return true;
-}
+
+
+
+// (4) Glyph printing - Standard output only!
+   /*rgb_matrix mtrx;
+   mtrx.run();
+
+   // Wait for user input
+   std::cout << "Press any key to exit" << std::endl;
+   std::cin.get();
+
+   mtrx.stop();*/
+
+   fontizer fz("./bdf-fonts/9x15.bdf");
+   std::string sample = "2,O'Clock";
+   color_buffer clrbuf;
+
+   // Determine color buffer size
+   int fboxw, fboxh;
+   fz.get_font_properties(fboxw, fboxh);
+
+   // Set color buffer params
+   clrbuf.length = fboxw * sample.size();
+   clrbuf.height = 16; // Let's keep this fixed for now
+   clrbuf.depth = 8;   // 8-bit color
+
+   // Allocate pixel memory
+   clrbuf.pix = new pixel[clrbuf.length * clrbuf.height];
+
+   // Start at (0,0)
+   int xcursor = 0;
+
+   for(size_t i = 0; i < sample.size(); i++)
+   {
+      xcursor += fz.draw(&clrbuf, xcursor, 0, sample[i]);
+   }
+
+   // Screen print
+   for(uint32_t y = 0; y < clrbuf.height; y++)
+   {
+      uint32_t col = y * clrbuf.length;
+      for(uint32_t x = 0; x < clrbuf.length; x++)
+      {
+         if(clrbuf.pix[col + x].r == 255)
+         {
+            std::cout << "@";
+         }
+         else
+         {
+            std::cout << "-";
+         }
+      }
+      std::cout << std::endl;
+   }
+
+   std::cin.get();
+
+   return 0;
+
+
+
+// (5)
+
+// (6)
+
+#endif
 

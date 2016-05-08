@@ -91,3 +91,4 @@ int fontizer::draw(color_buffer *clrbuf, uint32_t xpos, uint32_t ypos,
 
    return glyf->width;
 }
+
