@@ -59,11 +59,11 @@ struct glyph
    int hoff;
    uint32_t *bitmap;
 
-   glyph()
+   glyph():
+      width(0), height(0), woff(0), hoff(0),
+      bitmap(nullptr)
    {
-      width = height = 0;
-      woff = hoff = 0;
-      bitmap = nullptr;
+      
    }
 
    ~glyph()
@@ -98,7 +98,7 @@ public:
 
 
    glyph_loader(std::string font_file):
-      fbox_width_(0), fbox_height_(0)
+      fbox_width_(0), fbox_height_(0), fbox_xoff_(0), fbox_yoff_(0)
    {
       // Clear all mapped data
       font_.clear();
@@ -115,8 +115,9 @@ public:
       }
    }
 
-   glyph* get_glyph(uint32_t code_point);
-   void print_glyph(glyph* glyf);
+   const glyph* get_glyph(uint32_t code_point);
+   void print_glyph(uint32_t codepoint);
+   void get_fbox_params(int& fw, int& fh, int& xoff, int& yoff);
 
 };
 

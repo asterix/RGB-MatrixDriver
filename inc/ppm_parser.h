@@ -21,10 +21,7 @@ Created:   03-May-2016
 
 
 #include <fstream>
-#include <iostream>
-#include <regex>
 #include <string>
-#include <cstdlib>
 #include "logging.h"
 #include "frame_buffer.h"
 

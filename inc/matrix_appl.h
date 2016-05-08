@@ -25,6 +25,7 @@ Created:   23-Apr-2016
 #include "rgb_matrix.h"
 #include "ppm_parser.h"
 #include "glyph_loader.h"
+#include "fontizer.h"
 #include "what.h"
 
 

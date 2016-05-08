@@ -22,14 +22,60 @@ Created:   23-Apr-2016
 
 int main(int argc, char *arg[])
 {
-   rgb_matrix mtrx;
+   /*rgb_matrix mtrx;
    mtrx.run();
 
    // Wait for user input
    std::cout << "Press any key to exit" << std::endl;
    std::cin.get();
 
-   mtrx.stop();
+   mtrx.stop();*/
+
+   fontizer fz("./bdf-fonts/9x15.bdf");
+   std::string sample = "Wow!";
+   color_buffer clrbuf;
+
+   // Determine color buffer size
+   int fboxw, fboxh;
+   fz.get_font_properties(fboxw, fboxh);
+
+   // Set color buffer params
+   clrbuf.length = fboxw * sample.size();
+   clrbuf.height = 16; // Let's keep this fixed for now
+   clrbuf.depth = 8;   // 8-bit color
+
+   // Allocate pixel memory
+   clrbuf.pix = new pixel[clrbuf.length * clrbuf.height];
+
+   // Start at (0,0)
+   int xcursor = 0;
+
+   for(size_t i = 0; i < sample.size(); i++)
+   {
+      fz.draw(&clrbuf, xcursor, 0, sample[i]);
+   }
+
+   // Dummy print
+   for(uint32_t y = 0; y < clrbuf.length; y++)
+   {
+      for(uint32_t x = 0; x < clrbuf.height; x++)
+      {
+         if(clrbuf.pix[y * clrbuf.length + x].r == 255)
+         {
+            std::cout << "@";
+         }
+         else
+         {
+            std::cout << "-";
+         }
+      }
+      std::cout << std::endl;
+   }
+
+
+   std::cin.get();
+
+
 
    return 0;
 }

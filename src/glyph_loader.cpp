@@ -24,11 +24,10 @@ Created:   06-May-2016
 void glyph_loader::load_bdf_glyphs(std::string font_file)
 {
    // Some error checking
-   bool fbox, fstart, fend;
-   fbox = fstart = fend = false;
+   bool fbox = false, fstart = false, fend = false;
    uint32_t numchars = 0;
 
-   // Open the file
+   // Find & open font file
    std::ifstream fontfile(font_file.c_str(), std::ifstream::in);
 
    if(fontfile.is_open())
@@ -111,6 +110,7 @@ void glyph_loader::load_bdf_glyphs(std::string font_file)
             if(bmap)
             {
                // Need to shift glyph to align it left
+               // Ref: Glyph BDF Specification (Adobe_BDF_Spec.pdf)
                int align = BMAPWIDTH - (static_cast<int>
                                         (std::ceil(static_cast<double>
                                         (glyf->width)/MINWIDTH)) * MINWIDTH) + glyf->woff;
@@ -168,6 +168,9 @@ void glyph_loader::load_bdf_glyphs(std::string font_file)
       }
 
       LOG_DEBUG("Loaded "+ std::to_string(numchars)+ " font characters");
+
+      // Don't forget to close!
+      fontfile.close();
    }
    else
    {
@@ -176,7 +179,7 @@ void glyph_loader::load_bdf_glyphs(std::string font_file)
 }
 
 
-glyph* glyph_loader::get_glyph(uint32_t code_point)
+const glyph* glyph_loader::get_glyph(uint32_t code_point)
 {
    glyph *result = nullptr;
    font_map_typ::iterator it = font_.find(code_point);
@@ -193,13 +196,15 @@ glyph* glyph_loader::get_glyph(uint32_t code_point)
       result = it->second;
    }
 
-   return result;
+   return (static_cast<const glyph*>(result));
 }
 
 
 // Simple screen print 
-void glyph_loader::print_glyph(glyph* glyf)
+void glyph_loader::print_glyph(uint32_t codepoint)
 {
+   const glyph* glyf = this->get_glyph(codepoint);
+   
    for(int y = 0; y < glyf->height; y++)
    {
       for(int x = 0; x < glyf->width; x++)
@@ -215,5 +220,14 @@ void glyph_loader::print_glyph(glyph* glyf)
       }
       std::cout << std::endl;
    }
+}
+
+
+void glyph_loader::get_fbox_params(int& fw, int& fh, int& xoff, int& yoff)
+{
+   fw = fbox_width_;
+   fh = fbox_height_;
+   xoff = fbox_xoff_;
+   yoff = fbox_yoff_;
 }
 

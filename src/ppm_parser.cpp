@@ -17,6 +17,9 @@ Created:   03-May-2016
 ---------------------------------------------------------------------------*/
 
 #include "ppm_parser.h"
+#include <regex>
+#include <cstdlib>
+
 
 
 void ppm_parser::parse(std::string filename, color_buffer *buf)
