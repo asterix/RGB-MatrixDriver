@@ -29,6 +29,12 @@ Created:   23-Apr-2016
 #include "what.h"
 
 
+// Connected matrices
+#define MATRIX_LEN   32
+#define MATRIX_HGT   16
+#define NUM_CHAINED  3
+#define COLOR_DEPTH  8
+
 
 
 #endif // _MATRIX_APPL_H_

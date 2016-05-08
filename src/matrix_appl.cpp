@@ -23,9 +23,10 @@ Created:   23-Apr-2016
 fontizer fz("./bdf-fonts/9x15B.bdf");
 
 
+
 int main(int argc, char *arg[])
 {
-   rgb_matrix mtrx;
+   rgb_matrix mtrx(MATRIX_LEN, MATRIX_HGT, COLOR_DEPTH, NUM_CHAINED);
    mtrx.run();
 
    // Wait for user input
@@ -51,7 +52,7 @@ bool what::playground()
    pixel back;
    back.r = back.g = back.b = 0;
 
-   std::string sample = "Isn't this so cool? :)   ";
+   std::string sample = "Isn't this so the coolest thing on this planet? :)   ";
 
    if(fresh)
    {
