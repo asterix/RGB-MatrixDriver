@@ -39,6 +39,12 @@ public:
             b(0), a(0)
    { }
 
+   pixel(uint8_t rr, uint8_t gg, uint8_t bb)
+      : r(rr), g(gg), b(bb), a(100)
+   {
+      
+   }
+
    virtual ~pixel()
    { }
 
