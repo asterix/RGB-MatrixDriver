@@ -18,32 +18,14 @@ Created:   23-Apr-2016
 
 #include "matrix_appl.h"
 
-
 // Font store
 fontizer fz("./bdf-fonts/9x15B.bdf");
 
-static std::vector<pixel> wheel;
-
-#define BARSIZE 4
 
 
 int main(int argc, char *arg[])
 {
    srand(time(NULL));
-
-   wheel.push_back(pixel(0, 0, 255));
-   wheel.push_back(pixel(127, 0, 255));
-   wheel.push_back(pixel(255, 0, 255));
-   wheel.push_back(pixel(255, 0, 127));
-   wheel.push_back(pixel(255, 0, 0));
-   wheel.push_back(pixel(255, 127, 0));
-   wheel.push_back(pixel(255, 255, 0));
-   wheel.push_back(pixel(127, 255, 0));
-   wheel.push_back(pixel(0, 255, 0));
-   wheel.push_back(pixel(0, 255, 127));
-   wheel.push_back(pixel(0, 255, 255));
-   wheel.push_back(pixel(0, 127, 255));
-
    rgb_matrix mtrx(MATRIX_LEN, MATRIX_HGT, COLOR_DEPTH, NUM_CHAINED);
    mtrx.run();
 
@@ -52,7 +34,6 @@ int main(int argc, char *arg[])
    std::cin.get();
 
    mtrx.stop();
-
    return 0;
 }
 
@@ -60,24 +41,59 @@ int main(int argc, char *arg[])
 // Your coloring algorithm goes here
 bool what::playground()
 {
-   // Equalizer bars
-   int c = 0, rh = height_;
+   static bool fresh = true;
+   static color_buffer clrbuf;
+   static int xscroll = 0;
+   
+   // Set text colors
+   pixel fore;
+   fore.r = 238; fore.g = 154; fore.b = 0;
+   pixel back;
+   back.r = back.g = back.b = 0;
 
-   for(uint32_t x = 0; x < length_; x++)
+   std::string sample = "Isn't this so the coolest thing on this planet? :)   ";
+
+   if(fresh)
    {
-      if(x % BARSIZE == 0)
-      {
-         c++;
-         rh = rand() % height_;
-      }   
+      // Determine color buffer size
+      int fboxw, fboxh;
+      fz.get_font_properties(fboxw, fboxh);
 
-      for(uint32_t y = 0; y < height_; y++)
+      // Clear and free pixels before overwriting
+      clrbuf.clear();
+   
+      // Set color buffer params
+      clrbuf.length = fboxw * sample.size();
+      clrbuf.height = height_;
+      clrbuf.depth = 8;
+   
+      // Allocate pixel memory
+      clrbuf.pix = new pixel[clrbuf.length * clrbuf.height];
+   
+      // Start at (0,0)
+      int xcursor = 0;
+   
+      for(size_t i = 0; i < sample.size(); i++)
       {
-         if(static_cast<int>(y) >= rh)
+         xcursor += fz.draw(&clrbuf, xcursor, 0, &fore, &back, sample[i]);
+      }
+
+      fresh = false;
+   }
+
+   pixel* scroll_ptr = clrbuf.pix + xscroll;
+
+   // Load into frame-buffer
+   for(uint32_t y = 0; y < height_; y++)
+   {
+      uint32_t col = y * clrbuf.length;
+      for(uint32_t x = 0; x < length_; x++)
+      {
+         if(x < clrbuf.length)
          {
-            set_pixel(x, y,  wheel.at(c % wheel.size()).r,
-                             wheel.at(c % wheel.size()).g,
-                             wheel.at(c % wheel.size()).b);
+            set_pixel(x, y, scroll_ptr[col + x].r,
+                            scroll_ptr[col + x].g,
+                            scroll_ptr[col + x].b);
          }
          else
          {
@@ -86,8 +102,14 @@ bool what::playground()
       }
    }
 
-
-   usleep(300 * 1000);
+   // Progressive scrolling
+   xscroll++;
+   if(xscroll >= (static_cast<int>(clrbuf.length) - static_cast<int>(length_)))
+   {
+      xscroll = 0;
+   }
+   
+   usleep(50 * 1000);
    return true;
 }
 
@@ -305,7 +327,62 @@ bool what::playground()
 
 -------------------------------------------------------------------------------
 
-// (6)
+// (6) Equalizer Bars (free & random height => choppy!)
+// Globals
+#define BARSIZE 3
+static std::vector<pixel> wheel;
+
+   // In main()
+   // Crappy hurried way
+   // TODO: Algorithm for generating 12 point color wheel
+   wheel.push_back(pixel(0, 0, 255));
+   wheel.push_back(pixel(127, 0, 255));
+   wheel.push_back(pixel(255, 0, 255));
+   wheel.push_back(pixel(255, 0, 127));
+   wheel.push_back(pixel(255, 0, 0));
+   wheel.push_back(pixel(255, 127, 0));
+   wheel.push_back(pixel(255, 255, 0));
+   wheel.push_back(pixel(127, 255, 0));
+   wheel.push_back(pixel(0, 255, 0));
+   wheel.push_back(pixel(0, 255, 127));
+   wheel.push_back(pixel(0, 255, 255));
+   wheel.push_back(pixel(0, 127, 255));
+   
+   // In playground()
+   // Equalizer bars
+   int c = 0, rh = height_;
+
+   for(uint32_t x = 0; x < length_; x++)
+   {
+      if(x % BARSIZE == 0)
+      {
+         c++;
+         rh = rand() % height_;
+      }   
+
+      for(uint32_t y = 0; y < height_; y++)
+      {
+         if(static_cast<int>(y) >= rh)
+         {
+            set_pixel(x, y,  wheel.at(c % wheel.size()).r,
+                             wheel.at(c % wheel.size()).g,
+                             wheel.at(c % wheel.size()).b);
+         }
+         else
+         {
+            set_pixel(x, y, 0, 0, 0);
+         }
+      }
+   }
+
+
+   usleep(300 * 1000);
+   return true;
+   
+   
+-------------------------------------------------------------------------------   
+// (8) What next?   
+
 
 
 #endif
