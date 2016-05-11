@@ -22,7 +22,7 @@ Created:   24-Apr-2016
 
 #include <iostream>
 
-#define DEBUG 1
+//#define DEBUG 1
 
 // Logging macros
 #ifdef DEBUG
