@@ -39,18 +39,18 @@ class rgb_mtrx_ifc
 public:
    enum gpio_map
    {
-      R1 = 11,
-      G1 = 27,
-      B1 = 7,
-      R2 = 8,
-      G2 = 9,
-      B2 = 10,
-      A = 22,
-      B = 23,
-      C = 24,
-      D = 25,
-      CLK = 17,
-      LAT = 4,
+      R1 = 2,
+      G1 = 3,
+      B1 = 4,
+      R2 = 17,
+      G2 = 27,
+      B2 = 22,
+      A = 23,
+      B = 24,
+      C = 10,
+      D = 9,
+      CLK = 14,
+      LAT = 15,
       OE = 18
    };
 
