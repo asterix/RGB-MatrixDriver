@@ -1,6 +1,6 @@
 # RGB-MatrixDriver
 
-This document describes usage of [RGB LED matrix](https://www.adafruit.com/products/420).
+This document describes usage of [RGB LED matrix](https://www.adafruit.com/products/420) and similar matrices.
 
 ## Introduction
 
@@ -64,24 +64,24 @@ On the rear side marked out are the digital logic ICs. First, ```74HC245/74HCT24
 
 ```TTL``` logic, ```74HCT245``` can handle inputs from ```2.6V to 5V``` as logic high and this plays well (larger input noise margins) with Raspberry Pi or other ```3.3V GPIO``` output directly without any level converter.
 
-However if you have the ```CMOS``` version, ```74HC245```, the input noise margins are pretty low so logic high is only detected from 3.5V to 5V. You most definitely need a logic level converter . You can easily build your own with 2 ```74HCT245```s for all 12 input lines. There is also a designed adapter available [here] (https://github.com/hzeller/rpi-rgb-led-matrix/tree/master/adapter) which you could print and populate yourself. Adafruit also has a full hat for this.
+However if you have the ```CMOS``` version, ```74HC245```, the input noise margins are pretty low so logic high is only detected from 3.5V to 5V. You most definitely need a logic level converter . You can easily build your own with 2 ```74HCT245```s for all 12 input lines. My personal favorite method is to desolder the ```74HC245``` chips and solder in the ```74HCT245``` ones. Generally these matrices have them in SO-20 package like the one you can buy from Digikey [here](http://www.digikey.com/product-detail/en/nxp-semiconductors/74HCT245D,653/568-1530-1-ND/763405). If you don't want to go through this trouble, the there is also a designed adapter available [here] (https://github.com/hzeller/rpi-rgb-led-matrix/tree/master/adapter) which you could print and populate yourself. Adafruit also has a full hat for this. 
 
 The other important IC on the panel is ```74HC138``` which decodes the row address (```3:8 decoder```). This is ```74HC238``` on ```32x32``` panels decoding ```4:16``` rows. Lines ```A, B, C and D (only present when height of the matrix is 32 or more)``` are decoded from binary to activate a particular twin row. Two rows separated by half the panel are addressed at once. Such a multiplexing reduces overall flicker than when consecutive lines are addressed together.
 
 ```74HC123```, which is monostable multivibrator, is used probably to reshape ```CLK or ~OE``` (I'm not sure which one it is) when forwarding to the next cascaded panel through the output connector.
 
-The other yellow outlined ICs (```DP5020```) are just 16-bit shift registers. There are 12 of these on each ```16x32 panel```. This implies ```32 LEDs x 2 Rows x 3 Channels (R, G and B) = 196 bits``` of possible storage at any instant of time.
+The other yellow outlined ICs (```DP5020```) are just 16-bit shift registers. There are 12 of these on each ```16x32 panel```. This implies ```32 LEDs x 2 Rows x 3 Channels (R, G and B) = 192 bits``` of possible storage at any instant of time.
 
 
 ## Driving mechanism
 
 Driving these panels is pretty intensive task. Each bit of each color channel has to be accurately timed to produce the desired color. This is the part I struggled to understand initially and it took me a while, so I'll try to explain this as clearly as possible.
 
-As explained in the previous section, each address corresponds to two row separated by half the panel height. For example, if the panel is 16 rows high, then ```ABC = 000``` corresponds to row 0 and row 8 together. Let's call this a twin-row for all future references. Similarly for ```32x32``` panels ```ABCD = 0002``` corresponds to row 2 and row 18. The top (primary) row receives color data from ```R1, G1 and B1``` lines while the bottom row (multiplexed) received data from ```R2, G2 and B2``` lines.
+As explained in the previous section, each address corresponds to two row separated by half the panel height. For example, if the panel is 16 rows high, then ```ABC = 000``` corresponds to row 0 and row 8 together. Let's call this a twin-row for all future references. Similarly for ```32x32``` panels ```ABCD = 0002``` corresponds to row 2 and row 18. The top (primary) row receives color data from ```R1, G1 and B1``` lines while the bottom row (multiplexed) receives data from ```R2, G2 and B2``` lines.
 
-So for each clock cycle, 6 bits are shifted in (one of R/G/B(1) and R/G/B(2)). So to clock in a twin-row it takes width number of clock cycles. 32 clock cycles for one ```16x32``` Matrix for example. If cascaded, one twin-row corresponds to the full cascaded width. For example if you cascaded 3 panels of ```32 LED width``` each, then your twin-row will be ```96 bit``` wide hence taking 96 clock cycles. Remind you that clocking a full twin-row corresponds to just one bitplane, i.e, just one bit of ```R/G/B``` of 8-bit color.
+So for each clock cycle, 6 bits are shifted in (one of R/G/B(1) and R/G/B(2)). So to clock in a twin-row it takes width number of clock cycles. 32 clock cycles for one ```16x32``` Matrix for example. If cascaded, one twin-row corresponds to the full cascaded width. For example if you cascaded 3 panels of ```32 LED width``` each, then your twin-row will be ```96 bits``` wide hence taking ```96 clock cycles``` to shift in. Remind you that clocking a full twin-row corresponds to just one bitplane, i.e, just one bit of ```R/G/B``` of 8-bit color.
 
-Now, how does this show the required color? This is where timing and weighting kick in. Each bitplane of color needs to be held after latching for proportional amount of time. Since each bit of a binary number has a weight of power of two, that'll be amount of time for which it is held. For example if ```bit-0``` is held for 0.125us, then ```bit-1``` is held for 0.25us, ```bi-2``` for 0.5us and so on. This needs accurate timing else hues will smudge in. Hence we use PWM.
+Now, how does this show the required color? This is where timing and weighting kick in. Each bitplane of color needs to be held after latching for proportional amount of time. Since each bit of a binary number has a weight of power of two, that'll be amount of time for which it is held. For example if ```bit-0``` is held for 0.125us, then ```bit-1``` is held for 0.25us, ```bit-2``` for 0.5us and so on. This needs accurate timing else hues will smudge in. Hence we use PWM.
 
 Drive procedure:
 ```
@@ -129,6 +129,17 @@ Futhermore, some helper classes are used to accomplish some tasks like parsing P
 
 To develop an application of to play with what is shown on the matrix all you need to do is fill pixels of the frame buffer in ```what::playground()```. Every ```true``` return changes the active frame buffer to the newly filled one. A new class can be build around this, if the driving operation is specialized and complex.
 
+## Using this driver
+
+Using is made pretty straightforward by exposing the full frame buffer in ```what::playground()```. Applications themselves go in the file ```matrix_appl.cpp```. Keep ```main()``` minimal as is. There is really no need to modify it unless you're doing some really one time global operation. You can build a class/abstraction around ```what``` class to accomplish your needs.
+
+* To compile the code simply use the already built ```Makefile```.
+* You can add additional files needed to it under the ```src section```.
+* Just clone this repository using ```git clone``` and type in ```"make"``` in the main directory.
+* This compiles and links to an executable named ```matrix_appl```.
+* To run you'll need ```sudo``` rights. So, type in ```sudo ./matrix_appl``` and you should see your matrix light up if connected correctly.
+
+You're free to build more examples and extend this library with more features. Just open a pull request or an issue as you go on and I will take a look at them.
 
 ## Examples
 
