@@ -3,6 +3,15 @@
 I've designed and shared a small PCB which will let you convert Raspberry Pi's 3.3V GPIO outputs to a TTL compatible 5V levels that are needed for RGB LED matrices.
 You'll need to populate this PCB with ```74HCT245``` with ```20-SOIC package``` and jumpers.
 
+Top:
+
+![PCBtop](../images/hat-top.png?raw=true)
+
+Bottom:
+
+![PCBbot](../images/hat-bottom.png?raw=true)
+
+
 The full design is available under ```RGBMatrixHat``` directory. This is done in ```Eagle```.
 
 The first jumper is ```J1 = 12x2``` which is minimal and snaps straight into first ```12x2 pins``` of your Raspberry Pi. The second ```J2 = 8x2``` is an IDC header.
