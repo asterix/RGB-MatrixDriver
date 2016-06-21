@@ -20,6 +20,26 @@ The full design is available under ```RGBMatrixHat``` directory. This is done in
 The first jumper is ```J1 = 12x2``` which is minimal and snaps straight into first ```12x2 pins``` of your Raspberry Pi. The second ```J2 = 8x2``` is an IDC header.
 Just solder those in and you're good to go.
 
+## Soldered Hat
+
+Here are some photos of the soldered hat (Rev 2) to get a sense of header orientation.
+
+
+Soldered Top:
+
+![Stop](../images/soldered_top.png?raw=true)
+
+
+Soldered Bottom:
+
+![SBot](../images/soldered_bottom.png?raw=true)
+
+
+Connected to Raspberry Pi:
+
+![SPluggedIn](../images/soldered_in.png?raw=true)
+
+
 ## OSH Park share
 
 Find this design shared on [OSH Park](https://oshpark.com/shared_projects/pfg9EhMr) or use the permalink ```https://oshpark.com/shared_projects/pfg9EhMr```.
