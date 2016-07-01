@@ -4,8 +4,9 @@ SRC     = src
 OBJ     = obj
 
 ## Compiler specific ##
-CC      = g++ -std=c++11
-CFLAGS  = -g -Wall -MMD -I${INC} -O2
+## Use GCC >= 4.8.2
+CC      = g++
+CFLAGS  = -std=c++11 -g -Wall -MMD -I${INC} -O2
 
 ## Linker specific ##
 LPATHS  =

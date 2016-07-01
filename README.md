@@ -133,6 +133,8 @@ To develop an application of to play with what is shown on the matrix all you ne
 
 Using is made pretty straightforward by exposing the full frame buffer in ```what::playground()```. Applications themselves go in the file ```matrix_appl.cpp```. Keep ```main()``` minimal as is. There is really no need to modify it unless you're doing some really one time global operation. You can build a class/abstraction around ```what``` class to accomplish your needs.
 
+**Note: You'll need GCC version >= 4.8.2 to build this project**
+
 * To compile the code simply use the already built ```Makefile```.
 * You can add additional files needed to it under the ```src section```.
 * Just clone this repository using ```git clone``` and type in ```"make"``` in the main directory.
