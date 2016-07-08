@@ -64,7 +64,7 @@ public:
    pix_driver() = delete;
 
    pix_driver(frame_buffer* f)
-      : rt_thread(HPRIO, (1 << CPU_CORE3)), fbuf_(f), run_(false),
+      : rt_thread(HPRIO, (1 << CPU_CORE0)), fbuf_(f), run_(false),
         ifc_(), bit_plane_wait_(ROW_WAIT)
    {
       LOG_DEBUG("Constructor of pix_driver");
