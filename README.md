@@ -135,6 +135,15 @@ Using is made pretty straightforward by exposing the full frame buffer in ```wha
 
 **Note: You'll need GCC version >= 4.8.2 to build this project**
 
+**The default setting is for Raspberry Pi 2. If you're using Raspberry Pi 1, then make the below changes**
+```
+In rasp_pi_gpio.h comment the RASP_PI_2 flag to compile for Pi 1.
+//#define RASP_PI_2        1
+```
+
+
+Usage:
+
 * To compile the code simply use the already built ```Makefile```.
 * You can add additional files needed to it under the ```src section```.
 * Just clone this repository using ```git clone``` and type in ```"make"``` in the main directory.
